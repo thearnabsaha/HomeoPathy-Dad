@@ -272,7 +272,7 @@ export function SearchBar({ onSelectSymptom, onSelectRemedy }: SearchBarProps) {
                   border: "1px solid hsl(var(--border))",
                   background: "hsl(var(--card))",
                   color: "hsl(var(--foreground))",
-                  fontSize: 16,
+                  fontSize: 19,
                   outline: "none",
                 }}
               />

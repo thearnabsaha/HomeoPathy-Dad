@@ -175,7 +175,7 @@ export function NeoSearchBar({ onSelectSymptom, onSelectRemedy }: NeoSearchBarPr
               <Search style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "hsl(var(--muted-foreground))" }} />
               <input ref={mobileInputRef} value={query} onChange={(e) => handleChange(e.target.value)}
                 placeholder={t("search.placeholder")} autoFocus enterKeyHint="search"
-                style={{ width: "100%", paddingLeft: 40, paddingRight: 60, paddingTop: 12, paddingBottom: 12, borderRadius: 12, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))", color: "hsl(var(--foreground))", fontSize: 16, outline: "none" }} />
+                style={{ width: "100%", paddingLeft: 40, paddingRight: 60, paddingTop: 12, paddingBottom: 12, borderRadius: 12, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))", color: "hsl(var(--foreground))", fontSize: 19, outline: "none" }} />
               <div style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: 4 }}>
                 {query && (
                   <button onClick={() => { setQuery(""); setResults({ symptoms: [], remedies: [] }); mobileInputRef.current?.focus(); }}

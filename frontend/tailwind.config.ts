@@ -5,6 +5,21 @@ const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      fontSize: {
+        xs: ["15px", { lineHeight: "1rem" }],
+        sm: ["17px", { lineHeight: "1.25rem" }],
+        base: ["19px", { lineHeight: "1.5rem" }],
+        lg: ["21px", { lineHeight: "1.75rem" }],
+        xl: ["23px", { lineHeight: "1.75rem" }],
+        "2xl": ["27px", { lineHeight: "2rem" }],
+        "3xl": ["33px", { lineHeight: "2.25rem" }],
+        "4xl": ["39px", { lineHeight: "2.5rem" }],
+        "5xl": ["51px", { lineHeight: "1" }],
+        "6xl": ["63px", { lineHeight: "1" }],
+        "7xl": ["75px", { lineHeight: "1" }],
+        "8xl": ["99px", { lineHeight: "1" }],
+        "9xl": ["131px", { lineHeight: "1" }],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
