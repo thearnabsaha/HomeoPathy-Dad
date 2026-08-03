@@ -249,12 +249,12 @@ export function NeoSidebar({
                             : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                         )}
                       >
-                        <span className="truncate flex items-center gap-1.5">
+                        <span className="truncate flex items-center gap-1.5 min-w-0 flex-1">
                           <Layers className="h-3 w-3 shrink-0 opacity-50" />
-                          {rep._sort}
+                          <span className="truncate">{rep._sort}</span>
                         </span>
                         <div className="flex items-center gap-1 shrink-0">
-                          <span className="text-[10px] text-muted-foreground">{num(rep.conditionCount)}</span>
+                          <span className="text-[10px] text-muted-foreground tabular-nums">{num(rep.conditionCount)}</span>
                           <ChevronRight className={cn("h-3 w-3 transition-transform", isRepExpanded && "rotate-90")} />
                         </div>
                       </button>
@@ -277,13 +277,13 @@ export function NeoSidebar({
                                       : "text-muted-foreground hover:text-foreground hover:bg-accent/40"
                                   )}
                                 >
-                                  <span className="truncate flex items-center gap-1.5">
+                                  <span className="truncate flex items-center gap-1.5 min-w-0 flex-1">
                                     <FolderOpen className="h-2.5 w-2.5 shrink-0 opacity-50" />
-                                    {cond._sort}
+                                    <span className="truncate">{cond._sort}</span>
                                   </span>
                                   <div className="flex items-center gap-1 shrink-0">
                                     {typeof cond.symptomCount === "number" && (
-                                      <span className="text-[9px] text-muted-foreground">{num(cond.symptomCount as number)}</span>
+                                      <span className="text-[9px] text-muted-foreground tabular-nums">{num(cond.symptomCount as number)}</span>
                                     )}
                                     <ChevronRight className={cn("h-2.5 w-2.5 transition-transform", isCondExpanded && "rotate-90")} />
                                   </div>
@@ -306,9 +306,9 @@ export function NeoSidebar({
                                               "text-muted-foreground hover:text-foreground hover:bg-accent/30"
                                             )}
                                           >
-                                            <span className="truncate flex items-center gap-1">
+                                            <span className="truncate flex items-center gap-1 min-w-0 flex-1">
                                               <Stethoscope className="h-2.5 w-2.5 shrink-0 opacity-40" />
-                                              {sym._sort}
+                                              <span className="truncate">{sym._sort}</span>
                                             </span>
                                             {hasSubs && (
                                               <ChevronRight className={cn("h-2.5 w-2.5 shrink-0 transition-transform", isSymExpanded && "rotate-90")} />
