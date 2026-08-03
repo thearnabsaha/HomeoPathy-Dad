@@ -28,7 +28,7 @@ export function ConfidenceBar({ confidence, value, className }: ConfidenceBarPro
           style={{ width: `${Math.min(100, pct)}%` }}
         />
       </div>
-      <span className="text-[10px] text-muted-foreground tabular-nums w-8 text-right">
+      <span className="text-[10px] text-muted-foreground tabular-nums shrink-0 w-12 text-right whitespace-nowrap">
         {toBengaliNum(pct.toFixed(0), language)}%
       </span>
     </div>
