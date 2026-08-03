@@ -207,7 +207,7 @@ export function NeoSidebar({
 
       <aside
         className={cn(
-          "fixed top-14 left-0 z-30 h-[calc(100vh-3.5rem)] w-72 border-r border-border bg-background transition-transform duration-200 lg:static lg:translate-x-0",
+          "fixed top-14 left-0 z-30 h-[calc(100vh-3.5rem)] w-[85vw] max-w-sm border-r border-border bg-background transition-transform duration-200 lg:static lg:w-72 lg:max-w-none lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
