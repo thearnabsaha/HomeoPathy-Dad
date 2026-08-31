@@ -1,144 +1,98 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
   <defs>
-    <!-- Background Gradient -->
-    <radialGradient id="bg-clean-512" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="70%" stop-color="#f8fafc"/>
-      <stop offset="100%" stop-color="#f1f5f9"/>
+    <!-- Background Deep Obsidian with emerald ambient aura -->
+    <radialGradient id="no-leaf-bg-512" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#0f1f1a"/>
+      <stop offset="50%" stop-color="#08120f"/>
+      <stop offset="100%" stop-color="#030605"/>
     </radialGradient>
 
-    <!-- Border Subtle -->
-    <linearGradient id="border-clean-512" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#a3e635" stop-opacity="0.6"/>
-      <stop offset="50%" stop-color="#22c55e" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#16a34a" stop-opacity="0.5"/>
+    <!-- Squircle Border Gradient -->
+    <linearGradient id="no-leaf-border-512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#10b981" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.6"/>
     </linearGradient>
 
-    <!-- Vibrant Lime-to-Emerald Green Gradient (Exact Match to Reference) -->
-    <linearGradient id="green-cross-512" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#bef264"/>
-      <stop offset="30%" stop-color="#a3e635"/>
-      <stop offset="70%" stop-color="#65a30d"/>
-      <stop offset="100%" stop-color="#4d7c0f"/>
+    <!-- Vibrant Medical Cross Gradients -->
+    <linearGradient id="cross-main-512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="30%" stop-color="#34d399"/>
+      <stop offset="70%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
     </linearGradient>
 
-    <linearGradient id="leaf-main-512" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#4d7c0f"/>
-      <stop offset="40%" stop-color="#65a30d"/>
-      <stop offset="80%" stop-color="#a3e635"/>
-      <stop offset="100%" stop-color="#d9f99d"/>
+    <linearGradient id="cross-sheen-512" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
 
-    <linearGradient id="leaf-side-512" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#65a30d"/>
-      <stop offset="70%" stop-color="#a3e635"/>
-      <stop offset="100%" stop-color="#bef264"/>
+    <!-- Circular Ring Gradient -->
+    <linearGradient id="ring-glow-512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a7f3d0"/>
+      <stop offset="40%" stop-color="#34d399"/>
+      <stop offset="80%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857" stop-opacity="0.2"/>
     </linearGradient>
 
-    <linearGradient id="ring-grad-512" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#bef264"/>
-      <stop offset="50%" stop-color="#a3e635"/>
-      <stop offset="100%" stop-color="#65a30d"/>
-    </linearGradient>
-
-    <!-- Soft Drop Shadow -->
-    <filter id="clean-shadow-512" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1e293b" flood-opacity="0.08"/>
+    <!-- Ambient Glow & Shadows -->
+    <filter id="emerald-aura-512" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="24" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
 
-    <filter id="leaf-lift" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="-2" dy="6" stdDeviation="8" flood-color="#365314" flood-opacity="0.35"/>
+    <filter id="cross-shadow-512" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
     </filter>
   </defs>
 
   <!-- Clean Minimalist Squircle Base -->
-  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bg-clean-512)" stroke="url(#border-clean-512)" stroke-width="3"/>
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#no-leaf-bg-512)" stroke="url(#no-leaf-border-512)" stroke-width="3.5"/>
 
-  <!-- Logo Group Center -->
+  <!-- Ambient Emerald Light in Center -->
+  <circle cx="256" cy="256" r="140" fill="#10b981" opacity="0.18" filter="url(#emerald-aura-512)"/>
+  <circle cx="256" cy="256" r="80" fill="#34d399" opacity="0.22" filter="url(#emerald-aura-512)"/>
+
+  <!-- Center Composition -->
   <g transform="translate(256, 256)">
-    
-    <!-- Outer Dynamic Circular Ring -->
-    <path d="M-135 125 A190 190 0 1 1 125 -142"
+
+    <!-- Dynamic Minimalist Framing Circle Arc -->
+    <path d="M-135 135 A190 190 0 1 1 135 -135"
           fill="none"
-          stroke="url(#ring-grad-512)"
-          stroke-width="13"
+          stroke="url(#ring-glow-512)"
+          stroke-width="12"
           stroke-linecap="round"/>
 
-    <!-- Subtle Secondary Tapering Ring Arc (Top Right) -->
-    <path d="M142 -100 A190 190 0 0 1 188 -15"
+    <!-- Subtle Top-Right Accent Echo Arc -->
+    <path d="M152 -95 A190 190 0 0 1 190 -10"
           fill="none"
-          stroke="url(#ring-grad-512)"
-          stroke-width="6.5"
+          stroke="url(#ring-glow-512)"
+          stroke-width="6"
           stroke-linecap="round"
-          opacity="0.85"/>
+          opacity="0.8"/>
 
-    <!-- Medical Cross with Rounded Minimalist Corners -->
-    <g filter="url(#clean-shadow-512)">
-      <!-- Vertical bar of cross -->
-      <rect x="-42" y="-120" width="84" height="240" rx="20" fill="url(#green-cross-512)"/>
-      <!-- Horizontal bar of cross -->
-      <rect x="-120" y="-42" width="240" height="84" rx="20" fill="url(#green-cross-512)"/>
+    <!-- Pure Minimalist Medical Cross (No Leaves) -->
+    <g filter="url(#cross-shadow-512)">
+      <!-- Vertical Arm -->
+      <rect x="-44" y="-124" width="88" height="248" rx="30" fill="url(#cross-main-512)"/>
+      <!-- Horizontal Arm -->
+      <rect x="-124" y="-44" width="248" height="88" rx="30" fill="url(#cross-main-512)"/>
+
+      <!-- Inner Gloss & Glass Sheen Highlights -->
+      <g opacity="0.6">
+        <rect x="-40" y="-120" width="80" height="90" rx="26" fill="url(#cross-sheen-512)"/>
+        <rect x="-120" y="-40" width="90" height="80" rx="26" fill="url(#cross-sheen-512)"/>
+      </g>
+
+      <!-- Center Core Accent Pulse / Highlight -->
+      <circle cx="0" cy="0" r="16" fill="#ffffff" opacity="0.9"/>
+      <circle cx="0" cy="0" r="8" fill="#10b981"/>
     </g>
 
-    <!-- 3 Natural Homeopathic / Herbal Leaves (Matching Reference Layout) -->
-    <g filter="url(#leaf-lift)">
-      
-      <!-- Stem Swirling From Bottom-Left Ring Arc -->
-      <path d="M-155 125 C-115 135 -70 120 -30 75 C0 40 40 -15 80 -85"
-            fill="none"
-            stroke="#ffffff"
-            stroke-width="6.5"
-            stroke-linecap="round"/>
-
-      <path d="M-155 125 C-115 135 -70 120 -30 75 C0 40 40 -15 80 -85"
-            fill="none"
-            stroke="url(#leaf-main-512)"
-            stroke-width="4.5"
-            stroke-linecap="round"/>
-
-      <!-- 1. Large Main Center Leaf (Pointing Upward-Right) -->
-      <g>
-        <path d="M-30 85 C-45 -10 20 -95 90 -95 C115 -10 40 65 -30 85 Z"
-              fill="url(#leaf-main-512)"/>
-        <!-- Central Leaf Vein / Accent Curve -->
-        <path d="M-30 85 Q30 0 90 -95"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="4"
-              stroke-linecap="round"
-              opacity="0.9"/>
-        <!-- Subtle Side Vein -->
-        <path d="M5 25 Q35 15 55 35"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              opacity="0.65"/>
-      </g>
-
-      <!-- 2. Side Leaf on Left (Pointing Diagonally Up-Left) -->
-      <g>
-        <path d="M-40 85 C-105 75 -135 25 -135 -15 C-85 -10 -45 35 -40 85 Z"
-              fill="url(#leaf-side-512)"/>
-        <path d="M-40 85 Q-85 45 -135 -15"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="3"
-              stroke-linecap="round"
-              opacity="0.85"/>
-      </g>
-
-      <!-- 3. Bottom Leaf (Curving Along the Base) -->
-      <g>
-        <path d="M-25 90 C-15 135 45 155 85 145 C65 110 20 95 -25 90 Z"
-              fill="url(#leaf-side-512)"/>
-        <path d="M-25 90 Q30 120 85 145"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              opacity="0.85"/>
-      </g>
+    <!-- Subtle AI Star Sparkle (Top-Right) -->
+    <g transform="translate(148, -100) scale(0.65)" filter="url(#emerald-aura-512)">
+      <path d="M0 -22 Q3 -3 22 0 Q3 3 0 22 Q-3 3 -22 0 Q-3 -3 0 -22 Z" fill="#ffffff"/>
+      <circle cx="0" cy="0" r="3.5" fill="#34d399"/>
     </g>
 
   </g>
