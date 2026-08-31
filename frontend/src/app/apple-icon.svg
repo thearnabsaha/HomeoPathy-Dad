@@ -1,87 +1,100 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 192 192" fill="none">
   <defs>
-    <radialGradient id="apple-purple-bg" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#24103c"/>
-      <stop offset="50%" stop-color="#140724"/>
-      <stop offset="100%" stop-color="#090210"/>
+    <radialGradient id="apple-homeo-bg" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#281043"/>
+      <stop offset="50%" stop-color="#150626"/>
+      <stop offset="100%" stop-color="#080210"/>
     </radialGradient>
     
-    <linearGradient id="apple-liquid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e879f9"/>
-      <stop offset="40%" stop-color="#c084fc"/>
-      <stop offset="80%" stop-color="#9333ea"/>
-      <stop offset="100%" stop-color="#6b21a8"/>
+    <linearGradient id="apple-mortar-rim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#f5d0fe"/>
+      <stop offset="100%" stop-color="#9333ea"/>
     </linearGradient>
 
-    <linearGradient id="apple-cap-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f5d0fe"/>
-      <stop offset="50%" stop-color="#d8b4fe"/>
+    <linearGradient id="apple-pestle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#f5d0fe"/>
+      <stop offset="75%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+
+    <linearGradient id="apple-herb-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9333ea"/>
+      <stop offset="60%" stop-color="#d946ef"/>
+      <stop offset="100%" stop-color="#f0abfc"/>
+    </linearGradient>
+
+    <linearGradient id="apple-drop-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#f5d0fe"/>
+      <stop offset="80%" stop-color="#e879f9"/>
       <stop offset="100%" stop-color="#a855f7"/>
     </linearGradient>
 
-    <linearGradient id="apple-pill-top" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f472b6"/>
-      <stop offset="100%" stop-color="#c084fc"/>
-    </linearGradient>
-    <linearGradient id="apple-pill-bot" x1="0%" y1="0%" x2="100%" y2="100%">
+    <radialGradient id="apple-pellet-grad" cx="35%" cy="35%" r="65%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#e9d5ff"/>
-    </linearGradient>
+      <stop offset="60%" stop-color="#f5d0fe"/>
+      <stop offset="100%" stop-color="#d8b4fe"/>
+    </radialGradient>
 
     <filter id="apple-soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.55"/>
     </filter>
   </defs>
 
-  <rect width="192" height="192" fill="url(#apple-purple-bg)"/>
+  <rect width="192" height="192" fill="url(#apple-homeo-bg)"/>
 
   <!-- Ambient Glow -->
-  <circle cx="90" cy="100" r="50" fill="#a855f7" opacity="0.25"/>
+  <circle cx="96" cy="102" r="55" fill="#9333ea" opacity="0.25"/>
 
-  <!-- Medicine Dropper Bottle -->
   <g filter="url(#apple-soft-shadow)">
-    <!-- Dropper Bulb Top -->
-    <path d="M79 34 C79 27 84 23 91 23 C98 23 103 27 103 34 L103 40 L79 40 Z" fill="url(#apple-cap-grad)"/>
-    <!-- Collar -->
-    <rect x="82" y="42" width="18" height="8" rx="2" fill="#c084fc"/>
+    <!-- Pestle -->
+    <g transform="translate(86, 78) rotate(-38)">
+      <path d="M-6 -50 C-6 -56 0 -60 6 -60 C12 -60 18 -56 18 -50 L16 10 C16 18 10 24 6 24 C2 24 -4 18 -4 10 Z" fill="url(#apple-pestle-grad)"/>
+      <path d="M-2 -54 L1 12" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+    </g>
 
-    <!-- Glass Body -->
-    <path d="M73 54 L109 54 C118 54 125 61 125 70 L125 134 C125 144 117 152 107 152 L75 152 C65 152 57 144 57 134 L57 70 C57 61 64 54 73 54 Z"
-          fill="#1e0c32" stroke="#c084fc" stroke-width="1.8" stroke-opacity="0.5"/>
+    <!-- Mortar Base -->
+    <ellipse cx="96" cy="146" rx="38" ry="8" fill="#1e0840" stroke="#c084fc" stroke-width="1" stroke-opacity="0.4"/>
 
-    <!-- Glowing Liquid -->
-    <path d="M60 88 C71 84 82 90 91 87 C100 84 111 89 122 86 L122 133 C122 142 115 149 106 149 L76 149 C67 149 60 142 60 133 Z"
-          fill="url(#apple-liquid-grad)"/>
+    <!-- Mortar Bowl Body -->
+    <path d="M50 92 C50 126 70 140 96 140 C122 140 142 126 142 92 Z"
+          fill="#2e1065" stroke="#c084fc" stroke-width="1.5" stroke-opacity="0.5"/>
 
-    <!-- Glass Sheen -->
-    <path d="M64 66 L64 140" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+    <!-- Inner Cavity -->
+    <ellipse cx="96" cy="92" rx="44" ry="12" fill="#150626"/>
 
-    <!-- Glowing White Medical Cross -->
-    <rect x="87" y="102" width="8" height="30" rx="3" fill="#ffffff"/>
-    <rect x="76" y="113" width="30" height="8" rx="3" fill="#ffffff"/>
-    <circle cx="91" cy="117" r="1.5" fill="#a855f7"/>
+    <!-- Mortar Lip Rim -->
+    <ellipse cx="96" cy="92" rx="46" ry="12" fill="none" stroke="url(#apple-mortar-rim)" stroke-width="2.5"/>
+    
+    <!-- Sheen on Mortar -->
+    <path d="M62 102 C66 124 80 134 96 134" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.4" fill="none"/>
   </g>
 
-  <!-- Floating Medicine Capsule Pill -->
-  <g transform="translate(136, 126) rotate(-38)">
-    <path d="M-8 -16 C-8 -23 -1 -28 6 -28 C13 -28 20 -23 20 -16 L20 -2 L-8 -2 Z" fill="url(#apple-pill-top)"/>
-    <path d="M-8 -2 L20 -2 L20 12 C20 19 13 24 6 24 C-1 24 -8 19 -8 12 Z" fill="url(#apple-pill-bot)"/>
-    <rect x="-9" y="-3" width="30" height="2" rx="1" fill="#ffffff"/>
-    <path d="M-4 -20 L-4 16" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-  </g>
+  <!-- Homeopathic Sugar Globules (Pellets) -->
+  <circle cx="96" cy="93" r="5.5" fill="url(#apple-pellet-grad)"/>
+  <circle cx="106" cy="96" r="4.5" fill="url(#apple-pellet-grad)"/>
+  <circle cx="86" cy="96" r="5" fill="url(#apple-pellet-grad)"/>
+  <circle cx="94" cy="101" r="4" fill="url(#apple-pellet-grad)"/>
+  <circle cx="128" cy="128" r="5" fill="url(#apple-pellet-grad)"/>
+  <circle cx="138" cy="136" r="3.5" fill="url(#apple-pellet-grad)"/>
+  <circle cx="60" cy="133" r="4" fill="url(#apple-pellet-grad)"/>
 
-  <!-- Homeopathic Potentization Droplet (Left) -->
-  <g transform="translate(38, 82)">
-    <path d="M9 0 C9 0 18 11 18 18 C18 25 14 30 9 30 C4 30 0 25 0 18 C0 11 9 0 9 0 Z" fill="url(#apple-liquid-grad)"/>
-    <path d="M5 16 C5 12 7 8 9 6" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-  </g>
+  <!-- Homeopathic Herbal Branch -->
+  <path d="M112 90 C130 76 142 58 144 36" stroke="url(#apple-herb-grad)" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M144 36 C150 40 156 37 157 30 C155 24 148 24 144 36 Z" fill="url(#apple-herb-grad)"/>
+  <path d="M138 48 C148 51 152 45 153 40 C146 38 141 42 138 48 Z" fill="url(#apple-herb-grad)"/>
+  <path d="M126 65 C118 60 116 53 120 49 C126 51 128 58 126 65 Z" fill="url(#apple-herb-grad)"/>
 
-  <!-- AI Sparkles -->
-  <g transform="translate(146, 40) scale(0.4)">
+  <!-- Potentization Droplet -->
+  <path d="M96 36 C96 36 105 51 105 58 C105 64 101 68 96 68 C91 68 87 64 87 58 C87 51 96 36 96 36 Z"
+        fill="url(#apple-drop-grad)"/>
+  <circle cx="96" cy="59" r="1.8" fill="#ffffff"/>
+
+  <!-- Sparkles -->
+  <g transform="translate(48, 42) scale(0.35)">
     <path d="M0 -24 Q4 -4 24 0 Q4 4 0 24 Q-4 4 -24 0 Q-4 -4 0 -24 Z" fill="#ffffff"/>
-    <circle cx="0" cy="0" r="4" fill="#e879f9"/>
-  </g>
-  <g transform="translate(36, 46) scale(0.25)">
-    <path d="M0 -20 Q3 -3 20 0 Q3 3 0 20 Q-3 3 -20 0 Q-3 -3 0 -20 Z" fill="#f5d0fe"/>
+    <circle cx="0" cy="0" r="4" fill="#f0abfc"/>
   </g>
 </svg>
