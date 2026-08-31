@@ -142,8 +142,8 @@ Do NOT wrap JSON in markdown code fences.`;
 type Message = { role: string; content: string };
 
 async function callGroq(messages: Message[]) {
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey || apiKey === "your_groq_api_key_here") return null;
+  const apiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY;
+  if (!apiKey || apiKey === "your_groq_api_key_here" || apiKey === "your_grok_api_key_here") return null;
 
   for (const model of MODEL_CASCADE) {
     try {

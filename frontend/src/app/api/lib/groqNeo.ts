@@ -189,9 +189,9 @@ Do NOT wrap JSON in markdown code fences. Always include a disclaimer in Bengali
 type Message = { role: string; content: string };
 
 async function callNeoGroqAPI(messages: Message[]) {
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY;
 
-  if (!apiKey || apiKey === "your_groq_api_key_here") {
+  if (!apiKey || apiKey === "your_groq_api_key_here" || apiKey === "your_grok_api_key_here") {
     return generateNeoFallback(messages[messages.length - 1]?.content || "");
   }
 

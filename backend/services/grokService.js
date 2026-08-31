@@ -120,9 +120,9 @@ const SYSTEM_PROMPT_CONSULT = `আপনি ডাঃ রিপার্টর�
 Do NOT wrap JSON in markdown code fences. Always include a disclaimer in Bengali.`;
 
 async function callGroqAPI(messages) {
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY;
 
-  if (!apiKey || apiKey === 'your_groq_api_key_here') {
+  if (!apiKey || apiKey === 'your_groq_api_key_here' || apiKey === 'your_grok_api_key_here') {
     log('WARN', 'No API key configured, using fallback');
     return generateFallbackResponse(messages[messages.length - 1]?.content || '');
   }
