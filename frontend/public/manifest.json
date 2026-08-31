@@ -1,17 +1,23 @@
 {
-  "name": "রিপার্টরি এআই - হোমিওপ্যাথিক রেপার্টরি",
-  "short_name": "রিপার্টরি এআই",
-  "description": "কৃত্রিম বুদ্ধিমত্তা-চালিত হোমিওপ্যাথিক লক্ষণ বিশ্লেষণ ও ওষুধের পরামর্শ",
-  "lang": "bn",
+  "name": "NeoAI — AI Homeopathic Physician",
+  "short_name": "NeoAI",
+  "description": "AI-Powered Classical Homeopathic Repertorization & Physician Assistant",
+  "lang": "en",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
-  "background_color": "#000000",
-  "theme_color": "#000000",
-  "orientation": "portrait",
-  "categories": ["health", "medical"],
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "orientation": "portrait-primary",
+  "categories": ["health", "medical", "lifestyle"],
   "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32 48x48",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/icon-192.svg",
       "sizes": "192x192",

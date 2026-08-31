@@ -23,6 +23,17 @@ export const metadata: Metadata = {
   description:
     "Classical repertory-trained AI physician. 43 repertories, 1,103 medicines and 95,907 medicine-symptom relationships. Get accurate homeopathic medicine recommendations.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.svg",
+    apple: [
+      { url: "/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

@@ -1,69 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 192 192" fill="none">
   <defs>
-    <radialGradient id="bg-glow-192" cx="50%" cy="35%" r="65%">
+    <radialGradient id="apple-bg" cx="50%" cy="35%" r="65%">
       <stop offset="0%" stop-color="#1e293b"/>
       <stop offset="60%" stop-color="#0f172a"/>
       <stop offset="100%" stop-color="#050811"/>
     </radialGradient>
-    
-    <linearGradient id="border-grad-192" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="apple-border" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
       <stop offset="50%" stop-color="#34d399" stop-opacity="0.3"/>
       <stop offset="100%" stop-color="#6366f1" stop-opacity="0.5"/>
     </linearGradient>
-
-    <linearGradient id="cross-grad-192" x1="15%" y1="15%" x2="85%" y2="85%">
+    <linearGradient id="apple-cross" x1="15%" y1="15%" x2="85%" y2="85%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="30%" stop-color="#38bdf8"/>
       <stop offset="70%" stop-color="#06b6d4"/>
       <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
-
-    <linearGradient id="leaf-grad-192" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="apple-leaf" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#6ee7b7"/>
       <stop offset="40%" stop-color="#10b981"/>
       <stop offset="100%" stop-color="#047857"/>
     </linearGradient>
-
-    <linearGradient id="sparkle-grad-192" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="apple-sparkle" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="50%" stop-color="#a5f3fc"/>
       <stop offset="100%" stop-color="#38bdf8"/>
     </linearGradient>
-
-    <filter id="soft-shadow-192" x="-10%" y="-10%" width="120%" height="120%">
+    <filter id="apple-shadow" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
     </filter>
   </defs>
 
-  <!-- Squircle Base -->
-  <rect x="6" y="6" width="180" height="180" rx="40" fill="url(#bg-glow-192)" stroke="url(#border-grad-192)" stroke-width="2"/>
-
-  <!-- Ambient Glow -->
+  <rect width="192" height="192" fill="url(#apple-bg)"/>
   <circle cx="96" cy="96" r="45" fill="#06b6d4" opacity="0.18"/>
 
-  <!-- Medical Cross -->
-  <g filter="url(#soft-shadow-192)">
-    <rect x="82.5" y="42" width="27" height="108" rx="13.5" fill="url(#cross-grad-192)"/>
-    <rect x="42" y="82.5" width="108" height="27" rx="13.5" fill="url(#cross-grad-192)"/>
+  <g filter="url(#apple-shadow)">
+    <rect x="82.5" y="42" width="27" height="108" rx="13.5" fill="url(#apple-cross)"/>
+    <rect x="42" y="82.5" width="108" height="27" rx="13.5" fill="url(#apple-cross)"/>
   </g>
 
-  <!-- Homeopathic Leaf Overlay -->
   <g>
-    <path d="M96 48 C128 51 147 78 144 111 C141 144 112 150 93 141 C75 133 69 111 78 93 C87 75 90 60 96 48 Z"
-          fill="url(#leaf-grad-192)"/>
+    <path d="M96 48 C128 51 147 78 144 111 C141 144 112 150 93 141 C75 133 69 111 78 93 C87 75 90 60 96 48 Z" fill="url(#apple-leaf)"/>
     <path d="M96 56 Q116 90 93 141" stroke="#a7f3d0" stroke-width="2" stroke-linecap="round" opacity="0.75" fill="none"/>
     <path d="M103.5 78 Q118 82 127 76.5" stroke="#a7f3d0" stroke-width="1.5" stroke-linecap="round" opacity="0.6" fill="none"/>
     <path d="M100.5 97.5 Q120 103 130.5 98" stroke="#a7f3d0" stroke-width="1.5" stroke-linecap="round" opacity="0.6" fill="none"/>
   </g>
 
-  <!-- Central Energy Sparkle -->
   <circle cx="96" cy="96" r="6" fill="#ffffff" opacity="0.95"/>
   <circle cx="96" cy="96" r="3" fill="#38bdf8"/>
 
-  <!-- AI Sparkles -->
   <g transform="translate(139, 36) scale(0.4)">
-    <path d="M0 -22 Q3 -3 22 0 Q3 3 0 22 Q-3 3 -22 0 Q-3 -3 0 -22 Z" fill="url(#sparkle-grad-192)"/>
+    <path d="M0 -22 Q3 -3 22 0 Q3 3 0 22 Q-3 3 -22 0 Q-3 -3 0 -22 Z" fill="url(#apple-sparkle)"/>
     <circle cx="0" cy="0" r="4" fill="#ffffff"/>
   </g>
   <g transform="translate(39, 52) scale(0.28)">
