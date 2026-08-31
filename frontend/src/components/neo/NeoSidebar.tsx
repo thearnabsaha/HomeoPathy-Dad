@@ -207,7 +207,7 @@ export function NeoSidebar({
 
       <aside
         className={cn(
-          "fixed top-14 left-0 z-30 h-[calc(100vh-3.5rem)] w-[85vw] max-w-sm border-r border-border bg-background transition-transform duration-200 lg:static lg:w-72 lg:max-w-none lg:translate-x-0",
+          "fixed top-14 left-0 z-30 h-[calc(100vh-3.5rem)] w-[85vw] max-w-sm border-r border-border bg-background transition-transform duration-200 lg:static lg:w-80 lg:max-w-none lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -243,17 +243,17 @@ export function NeoSidebar({
                       <button
                         onClick={() => handleRepClick(rep.id)}
                         className={cn(
-                          "flex items-center justify-between w-full px-2 py-1.5 text-sm rounded transition-colors",
+                          "flex items-start justify-between w-full px-2 py-1.5 text-sm rounded transition-colors text-left group",
                           activeChapter === rep.id
                             ? "bg-accent text-accent-foreground font-medium"
                             : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                         )}
                       >
-                        <span className="truncate flex items-center gap-1.5 min-w-0 flex-1">
-                          <Layers className="h-3 w-3 shrink-0 opacity-50" />
-                          <span className="truncate">{rep._sort}</span>
+                        <span className="flex items-start gap-1.5 min-w-0 flex-1 pr-1.5">
+                          <Layers className="h-3.5 w-3.5 shrink-0 opacity-50 mt-0.5" />
+                          <span className="break-words whitespace-normal leading-snug">{rep._sort}</span>
                         </span>
-                        <div className="flex items-center gap-1 shrink-0">
+                        <div className="flex items-center gap-1 shrink-0 mt-0.5">
                           <span className="text-[10px] text-muted-foreground tabular-nums">{num(rep.conditionCount)}</span>
                           <ChevronRight className={cn("h-3 w-3 transition-transform", isRepExpanded && "rotate-90")} />
                         </div>
@@ -271,17 +271,17 @@ export function NeoSidebar({
                                 <button
                                   onClick={() => handleCondClick(cond.id)}
                                   className={cn(
-                                    "flex items-center justify-between w-full px-2 py-1 text-xs rounded transition-colors",
+                                    "flex items-start justify-between w-full px-2 py-1 text-xs rounded transition-colors text-left group",
                                     expandedCond === cond.id
                                       ? "bg-accent/80 text-accent-foreground font-medium"
                                       : "text-muted-foreground hover:text-foreground hover:bg-accent/40"
                                   )}
                                 >
-                                  <span className="truncate flex items-center gap-1.5 min-w-0 flex-1">
-                                    <FolderOpen className="h-2.5 w-2.5 shrink-0 opacity-50" />
-                                    <span className="truncate">{cond._sort}</span>
+                                  <span className="flex items-start gap-1.5 min-w-0 flex-1 pr-1.5">
+                                    <FolderOpen className="h-2.5 w-2.5 shrink-0 opacity-50 mt-0.5" />
+                                    <span className="break-words whitespace-normal leading-snug">{cond._sort}</span>
                                   </span>
-                                  <div className="flex items-center gap-1 shrink-0">
+                                  <div className="flex items-center gap-1 shrink-0 mt-0.5">
                                     {typeof cond.symptomCount === "number" && (
                                       <span className="text-[9px] text-muted-foreground tabular-nums">{num(cond.symptomCount as number)}</span>
                                     )}
@@ -302,16 +302,16 @@ export function NeoSidebar({
                                           <button
                                             onClick={() => handleSymClick(sym.id, hasSubs)}
                                             className={cn(
-                                              "flex items-center justify-between w-full px-1.5 py-0.5 text-[11px] rounded transition-colors",
+                                              "flex items-start justify-between w-full px-1.5 py-0.5 text-[11px] rounded transition-colors text-left",
                                               "text-muted-foreground hover:text-foreground hover:bg-accent/30"
                                             )}
                                           >
-                                            <span className="truncate flex items-center gap-1 min-w-0 flex-1">
-                                              <Stethoscope className="h-2.5 w-2.5 shrink-0 opacity-40" />
-                                              <span className="truncate">{sym._sort}</span>
+                                            <span className="flex items-start gap-1 min-w-0 flex-1 pr-1">
+                                              <Stethoscope className="h-2.5 w-2.5 shrink-0 opacity-40 mt-0.5" />
+                                              <span className="break-words whitespace-normal leading-snug">{sym._sort}</span>
                                             </span>
                                             {hasSubs && (
-                                              <ChevronRight className={cn("h-2.5 w-2.5 shrink-0 transition-transform", isSymExpanded && "rotate-90")} />
+                                              <ChevronRight className={cn("h-2.5 w-2.5 shrink-0 transition-transform mt-0.5", isSymExpanded && "rotate-90")} />
                                             )}
                                           </button>
 
@@ -322,7 +322,7 @@ export function NeoSidebar({
                                                 <button
                                                   key={sub.id}
                                                   onClick={() => handleSubClick(sub.id)}
-                                                  className="block w-full text-left px-1.5 py-0.5 text-[10px] text-muted-foreground hover:text-foreground rounded hover:bg-accent/25 truncate transition-colors"
+                                                  className="block w-full text-left px-1.5 py-0.5 text-[10px] text-muted-foreground hover:text-foreground rounded hover:bg-accent/25 break-words whitespace-normal leading-snug transition-colors"
                                                 >
                                                   {sub._sort}
                                                 </button>
@@ -366,7 +366,7 @@ export function NeoSidebar({
                     <SwipeItem key={b.id} onDelete={() => removeBookmark(b.id)}>
                       <button
                         onClick={() => onSelectSymptom(b.id)}
-                        className="block w-full text-left px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded hover:bg-accent/50 truncate"
+                        className="block w-full text-left px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded hover:bg-accent/50 break-words whitespace-normal leading-snug"
                       >
                         {tr(b.name)}
                       </button>

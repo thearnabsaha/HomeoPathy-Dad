@@ -228,12 +228,14 @@ function RepertoryContent() {
         {items.length === 0 && !loading && <p className="text-xs text-muted-foreground p-3">{placeholder}</p>}
         {items.map((item) => (
           <button key={item.id} onClick={() => onSelect(item as { id: number; name: string })}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between ${
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-start justify-between gap-1.5 ${
               selected === item.id ? "bg-primary text-primary-foreground" : "hover:bg-muted"
             }`}>
-            <span className="truncate">{bn(item.name)}</span>
-            {item.extra !== undefined && <span className={`text-[10px] shrink-0 ml-1 ${selected === item.id ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{typeof item.extra === 'number' ? num(item.extra) : item.extra}</span>}
-            {item.arrow && <ChevronRight className={`h-3 w-3 shrink-0 ${selected === item.id ? "text-primary-foreground/60" : "text-muted-foreground"}`} />}
+            <span className="break-words whitespace-normal leading-snug flex-1">{bn(item.name)}</span>
+            <div className="flex items-center gap-1 shrink-0 mt-0.5">
+              {item.extra !== undefined && <span className={`text-[10px] tabular-nums ${selected === item.id ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{typeof item.extra === 'number' ? num(item.extra) : item.extra}</span>}
+              {item.arrow && <ChevronRight className={`h-3 w-3 ${selected === item.id ? "text-primary-foreground/60" : "text-muted-foreground"}`} />}
+            </div>
           </button>
         ))}
       </div>

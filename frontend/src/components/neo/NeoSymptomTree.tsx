@@ -175,10 +175,10 @@ export function NeoSymptomTree({
       <ScrollArea className="h-[calc(100vh-12rem)]">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="flex items-start gap-2 flex-1 min-w-0">
               <button
                 onClick={() => onToggleSymptom(symptom.id, symptom.name)}
-                className="p-0.5 text-muted-foreground hover:text-foreground shrink-0"
+                className="p-0.5 text-muted-foreground hover:text-foreground shrink-0 mt-0.5"
               >
                 {selectedSymptoms.includes(symptom.id) ? (
                   <CheckSquare className="h-5 w-5 text-foreground" />
@@ -186,7 +186,7 @@ export function NeoSymptomTree({
                   <Square className="h-5 w-5" />
                 )}
               </button>
-              <h2 className="text-lg font-semibold truncate">{tr(symptom.name)}</h2>
+              <h2 className="text-lg font-semibold break-words whitespace-normal leading-tight">{tr(symptom.name)}</h2>
             </div>
             <NeoBookmarkButton id={symptom.id} name={symptom.name} type="symptom" />
           </div>
