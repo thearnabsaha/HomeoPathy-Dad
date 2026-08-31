@@ -7,8 +7,8 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui", "browser"],
-  "background_color": "#140724",
-  "theme_color": "#140724",
+  "background_color": "#ffffff",
+  "theme_color": "#84cc16",
   "orientation": "portrait-primary",
   "categories": ["health", "medical", "lifestyle"],
   "icons": [

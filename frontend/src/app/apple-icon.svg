@@ -1,100 +1,108 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 192 192" fill="none">
   <defs>
-    <radialGradient id="apple-homeo-bg" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#281043"/>
-      <stop offset="50%" stop-color="#150626"/>
-      <stop offset="100%" stop-color="#080210"/>
-    </radialGradient>
-    
-    <linearGradient id="apple-mortar-rim" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#c084fc"/>
-      <stop offset="50%" stop-color="#f5d0fe"/>
-      <stop offset="100%" stop-color="#9333ea"/>
-    </linearGradient>
-
-    <linearGradient id="apple-pestle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <radialGradient id="apple-clean-bg" cx="50%" cy="30%" r="70%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="35%" stop-color="#f5d0fe"/>
-      <stop offset="75%" stop-color="#c084fc"/>
-      <stop offset="100%" stop-color="#7e22ce"/>
-    </linearGradient>
-
-    <linearGradient id="apple-herb-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#9333ea"/>
-      <stop offset="60%" stop-color="#d946ef"/>
-      <stop offset="100%" stop-color="#f0abfc"/>
-    </linearGradient>
-
-    <linearGradient id="apple-drop-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="40%" stop-color="#f5d0fe"/>
-      <stop offset="80%" stop-color="#e879f9"/>
-      <stop offset="100%" stop-color="#a855f7"/>
-    </linearGradient>
-
-    <radialGradient id="apple-pellet-grad" cx="35%" cy="35%" r="65%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="60%" stop-color="#f5d0fe"/>
-      <stop offset="100%" stop-color="#d8b4fe"/>
+      <stop offset="70%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
     </radialGradient>
 
-    <filter id="apple-soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.55"/>
+    <linearGradient id="apple-green-cross" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bef264"/>
+      <stop offset="30%" stop-color="#a3e635"/>
+      <stop offset="70%" stop-color="#65a30d"/>
+      <stop offset="100%" stop-color="#4d7c0f"/>
+    </linearGradient>
+
+    <linearGradient id="apple-leaf-main" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4d7c0f"/>
+      <stop offset="40%" stop-color="#65a30d"/>
+      <stop offset="80%" stop-color="#a3e635"/>
+      <stop offset="100%" stop-color="#d9f99d"/>
+    </linearGradient>
+
+    <linearGradient id="apple-leaf-side" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#65a30d"/>
+      <stop offset="70%" stop-color="#a3e635"/>
+      <stop offset="100%" stop-color="#bef264"/>
+    </linearGradient>
+
+    <linearGradient id="apple-ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bef264"/>
+      <stop offset="50%" stop-color="#a3e635"/>
+      <stop offset="100%" stop-color="#65a30d"/>
+    </linearGradient>
+
+    <filter id="apple-clean-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#1e293b" flood-opacity="0.1"/>
     </filter>
   </defs>
 
-  <rect width="192" height="192" fill="url(#apple-homeo-bg)"/>
+  <rect width="192" height="192" fill="url(#apple-clean-bg)"/>
 
-  <!-- Ambient Glow -->
-  <circle cx="96" cy="102" r="55" fill="#9333ea" opacity="0.25"/>
+  <g transform="translate(96, 96)">
+    <!-- Outer Dynamic Circular Ring -->
+    <path d="M-50 48 A72 72 0 1 1 48 -54"
+          fill="none"
+          stroke="url(#apple-ring-grad)"
+          stroke-width="5"
+          stroke-linecap="round"/>
 
-  <g filter="url(#apple-soft-shadow)">
-    <!-- Pestle -->
-    <g transform="translate(86, 78) rotate(-38)">
-      <path d="M-6 -50 C-6 -56 0 -60 6 -60 C12 -60 18 -56 18 -50 L16 10 C16 18 10 24 6 24 C2 24 -4 18 -4 10 Z" fill="url(#apple-pestle-grad)"/>
-      <path d="M-2 -54 L1 12" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+    <path d="M54 -38 A72 72 0 0 1 70 -6"
+          fill="none"
+          stroke="url(#apple-ring-grad)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          opacity="0.85"/>
+
+    <!-- Medical Cross -->
+    <g filter="url(#apple-clean-shadow)">
+      <rect x="-16" y="-45" width="32" height="90" rx="7.5" fill="url(#apple-green-cross)"/>
+      <rect x="-45" y="-16" width="90" height="32" rx="7.5" fill="url(#apple-green-cross)"/>
     </g>
 
-    <!-- Mortar Base -->
-    <ellipse cx="96" cy="146" rx="38" ry="8" fill="#1e0840" stroke="#c084fc" stroke-width="1" stroke-opacity="0.4"/>
+    <!-- 3 Natural Leaves -->
+    <g>
+      <!-- Stem -->
+      <path d="M-58 48 C-44 52 -26 45 -11 28 C0 15 15 -6 30 -32"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2.5"
+            stroke-linecap="round"/>
+      <path d="M-58 48 C-44 52 -26 45 -11 28 C0 15 15 -6 30 -32"
+            fill="none"
+            stroke="url(#apple-leaf-main)"
+            stroke-width="1.6"
+            stroke-linecap="round"/>
 
-    <!-- Mortar Bowl Body -->
-    <path d="M50 92 C50 126 70 140 96 140 C122 140 142 126 142 92 Z"
-          fill="#2e1065" stroke="#c084fc" stroke-width="1.5" stroke-opacity="0.5"/>
+      <!-- 1. Center Main Leaf -->
+      <path d="M-11 32 C-17 -4 8 -36 34 -36 C44 -4 15 24 -11 32 Z"
+            fill="url(#apple-leaf-main)"/>
+      <path d="M-11 32 Q11 0 34 -36"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity="0.9"/>
 
-    <!-- Inner Cavity -->
-    <ellipse cx="96" cy="92" rx="44" ry="12" fill="#150626"/>
+      <!-- 2. Left Side Leaf -->
+      <path d="M-15 32 C-40 28 -51 9 -51 -6 C-32 -4 -17 13 -15 32 Z"
+            fill="url(#apple-leaf-side)"/>
+      <path d="M-15 32 Q-32 17 -51 -6"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            opacity="0.85"/>
 
-    <!-- Mortar Lip Rim -->
-    <ellipse cx="96" cy="92" rx="46" ry="12" fill="none" stroke="url(#apple-mortar-rim)" stroke-width="2.5"/>
-    
-    <!-- Sheen on Mortar -->
-    <path d="M62 102 C66 124 80 134 96 134" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.4" fill="none"/>
-  </g>
-
-  <!-- Homeopathic Sugar Globules (Pellets) -->
-  <circle cx="96" cy="93" r="5.5" fill="url(#apple-pellet-grad)"/>
-  <circle cx="106" cy="96" r="4.5" fill="url(#apple-pellet-grad)"/>
-  <circle cx="86" cy="96" r="5" fill="url(#apple-pellet-grad)"/>
-  <circle cx="94" cy="101" r="4" fill="url(#apple-pellet-grad)"/>
-  <circle cx="128" cy="128" r="5" fill="url(#apple-pellet-grad)"/>
-  <circle cx="138" cy="136" r="3.5" fill="url(#apple-pellet-grad)"/>
-  <circle cx="60" cy="133" r="4" fill="url(#apple-pellet-grad)"/>
-
-  <!-- Homeopathic Herbal Branch -->
-  <path d="M112 90 C130 76 142 58 144 36" stroke="url(#apple-herb-grad)" stroke-width="2" stroke-linecap="round" fill="none"/>
-  <path d="M144 36 C150 40 156 37 157 30 C155 24 148 24 144 36 Z" fill="url(#apple-herb-grad)"/>
-  <path d="M138 48 C148 51 152 45 153 40 C146 38 141 42 138 48 Z" fill="url(#apple-herb-grad)"/>
-  <path d="M126 65 C118 60 116 53 120 49 C126 51 128 58 126 65 Z" fill="url(#apple-herb-grad)"/>
-
-  <!-- Potentization Droplet -->
-  <path d="M96 36 C96 36 105 51 105 58 C105 64 101 68 96 68 C91 68 87 64 87 58 C87 51 96 36 96 36 Z"
-        fill="url(#apple-drop-grad)"/>
-  <circle cx="96" cy="59" r="1.8" fill="#ffffff"/>
-
-  <!-- Sparkles -->
-  <g transform="translate(48, 42) scale(0.35)">
-    <path d="M0 -24 Q4 -4 24 0 Q4 4 0 24 Q-4 4 -24 0 Q-4 -4 0 -24 Z" fill="#ffffff"/>
-    <circle cx="0" cy="0" r="4" fill="#f0abfc"/>
+      <!-- 3. Bottom Leaf -->
+      <path d="M-9 34 C-6 51 17 59 32 55 C25 42 8 36 -9 34 Z"
+            fill="url(#apple-leaf-side)"/>
+      <path d="M-9 34 Q11 46 32 55"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1"
+            stroke-linecap="round"
+            opacity="0.85"/>
+    </g>
   </g>
 </svg>
