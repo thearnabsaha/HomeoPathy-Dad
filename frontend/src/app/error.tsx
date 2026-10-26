@@ -17,9 +17,17 @@ export default function ErrorBoundary({
     console.error("Unhandled client error caught by boundary:", error);
   }, [error]);
 
+  const handleTryAgain = () => {
+    try {
+      localStorage.removeItem("neoai-explorer-state");
+    } catch {}
+    reset();
+  };
+
   const handleClearAndReload = () => {
     try {
-      // Clear corrupt local state keys if any
+      localStorage.removeItem("neoai-explorer-state");
+      localStorage.removeItem("neoai-history");
       sessionStorage.clear();
     } catch {}
     window.location.href = "/";
@@ -31,11 +39,16 @@ export default function ErrorBoundary({
         <AlertTriangle className="h-8 w-8" />
       </div>
       <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
-      <p className="text-sm text-muted-foreground max-w-md mb-6">
+      <p className="text-sm text-muted-foreground max-w-md mb-4">
         An unexpected error occurred while loading this page. You can try refreshing or resetting your session.
       </p>
+      {error?.message && (
+        <div className="mb-6 p-2 rounded-lg bg-muted text-[11px] text-muted-foreground font-mono max-w-md overflow-x-auto text-left border border-border">
+          {error.message}
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <Button onClick={() => reset()} variant="outline" size="sm" className="gap-2">
+        <Button onClick={handleTryAgain} variant="outline" size="sm" className="gap-2">
           <RotateCcw className="h-4 w-4" />
           Try Again
         </Button>

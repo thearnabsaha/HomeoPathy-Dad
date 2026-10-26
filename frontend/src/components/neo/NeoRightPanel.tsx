@@ -182,7 +182,7 @@ function RankedRemedyCard({
           <div>
             <p className="text-[10px] font-medium mb-1">{t("rank.symptomMatch")}:</p>
             <div className="space-y-0.5">
-              {remedy.coverageDetails.map((cd, i) => (
+              {(Array.isArray(remedy?.coverageDetails) ? remedy.coverageDetails : []).map((cd, i) => (
                 <div
                   key={i}
                   className="flex items-center gap-2 text-[10px] text-muted-foreground"
@@ -203,7 +203,11 @@ function RankedRemedyCard({
                 <p className="text-muted-foreground mt-0.5">
                   {isBn && worBn
                     ? worBn.slice(0, 4).join(", ")
-                    : remedy.modalities.worse?.slice(0, 4).map((w) => tr(w)).join(", ")}
+                    : Array.isArray(remedy.modalities.worse)
+                    ? remedy.modalities.worse.slice(0, 4).map((w) => tr(w)).join(", ")
+                    : typeof remedy.modalities.worse === "string"
+                    ? tr(remedy.modalities.worse)
+                    : ""}
                 </p>
               </div>
               <div>
@@ -211,7 +215,11 @@ function RankedRemedyCard({
                 <p className="text-muted-foreground mt-0.5">
                   {isBn && betBn
                     ? betBn.slice(0, 4).join(", ")
-                    : remedy.modalities.better?.slice(0, 4).map((b) => tr(b)).join(", ")}
+                    : Array.isArray(remedy.modalities.better)
+                    ? remedy.modalities.better.slice(0, 4).map((b) => tr(b)).join(", ")
+                    : typeof remedy.modalities.better === "string"
+                    ? tr(remedy.modalities.better)
+                    : ""}
                 </p>
               </div>
             </div>
@@ -279,7 +287,7 @@ export function NeoRightPanel({
   const tr = (text: string) => (language === "bn" ? translateRepertory(text) : text);
 
   const topTwoRows = useMemo(() => {
-    if (!ranking?.rankedRemedies) return [];
+    if (!ranking || !Array.isArray(ranking.rankedRemedies)) return [];
     type Row = {
       symptomId: string;
       symptomLabel: string;
@@ -318,7 +326,7 @@ export function NeoRightPanel({
   }, [ranking?.rankedRemedies]);
 
   const allMedicineRows = useMemo(() => {
-    if (!ranking?.rankedRemedies) return [];
+    if (!ranking || !Array.isArray(ranking.rankedRemedies)) return [];
     type Row = {
       symptomId: string;
       symptomLabel: string;
@@ -459,15 +467,15 @@ export function NeoRightPanel({
 
       {loading && <AnalysisSkeleton />}
 
-      {!loading && ranking && ranking.rankedRemedies.length > 0 && (
+      {!loading && ranking && Array.isArray(ranking.rankedRemedies) && ranking.rankedRemedies.length > 0 && (
         <div className="space-y-3 animate-slide-up">
             <div className="flex items-center justify-between">
             <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              {t("rank.topRemedies")} ({toBengaliNum(ranking.totalRemediesFound)})
+              {t("rank.topRemedies")} ({toBengaliNum(ranking.totalRemediesFound || 0)})
             </h3>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-muted-foreground">
-                {toBengaliNum(ranking.totalSymptomsAnalyzed)} {t("rank.symptomsAnalyzed")}
+                {toBengaliNum(ranking.totalSymptomsAnalyzed || 0)} {t("rank.symptomsAnalyzed")}
               </span>
               <span className="text-[10px] text-green-500 flex items-center gap-0.5">
                 <Check className="h-2.5 w-2.5" />
@@ -498,7 +506,7 @@ export function NeoRightPanel({
           )}
 
           <div className="space-y-2">
-            {ranking.rankedRemedies.map((rem) => (
+            {(ranking.rankedRemedies || []).map((rem) => (
               <RankedRemedyCard
                 key={rem.id}
                 remedy={rem}
@@ -622,7 +630,7 @@ export function NeoRightPanel({
         </div>
       )}
 
-      {!loading && ranking && ranking.rankedRemedies.length === 0 && (
+      {!loading && ranking && (!Array.isArray(ranking.rankedRemedies) || ranking.rankedRemedies.length === 0) && (
         <div className="text-center py-6">
           <p className="text-xs text-muted-foreground">{t("rank.noResults")}</p>
         </div>

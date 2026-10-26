@@ -67,14 +67,32 @@ export function NeoExplorerProvider({ children }: { children: ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         stateCacheRef.current = parsed;
-        if (parsed.selectedSymptoms) setSelectedSymptomsRaw(parsed.selectedSymptoms);
-        if (parsed.activeChapter) setActiveChapterRaw(parsed.activeChapter);
-        if (parsed.selectedSymptomId) setSelectedSymptomIdRaw(parsed.selectedSymptomId);
-        if (parsed.ranking) setRankingRaw(parsed.ranking);
-        if (parsed.aiAnalysis) setAiAnalysisRaw(parsed.aiAnalysis);
+        if (Array.isArray(parsed.selectedSymptoms)) {
+          setSelectedSymptomsRaw(
+            parsed.selectedSymptoms
+              .filter(Boolean)
+              .map((s: { id?: string; name?: string } | string) =>
+                typeof s === "string"
+                  ? { id: s, name: s }
+                  : { id: s.id || "", name: s.name || s.id || "" }
+              )
+              .filter((s: { id: string }) => s.id)
+          );
+        }
+        if (typeof parsed.activeChapter === "string") setActiveChapterRaw(parsed.activeChapter);
+        if (typeof parsed.selectedSymptomId === "string") setSelectedSymptomIdRaw(parsed.selectedSymptomId);
+        if (parsed.ranking && Array.isArray(parsed.ranking.rankedRemedies)) {
+          setRankingRaw(parsed.ranking);
+        }
+        if (parsed.aiAnalysis && typeof parsed.aiAnalysis === "object") {
+          setAiAnalysisRaw(parsed.aiAnalysis);
+        }
       }
       const hist = localStorage.getItem(HISTORY_KEY);
-      if (hist) setHistory(JSON.parse(hist));
+      if (hist) {
+        const parsedHist = JSON.parse(hist);
+        if (Array.isArray(parsedHist)) setHistory(parsedHist);
+      }
     } catch {
       /* ignore */
     }

@@ -17,7 +17,12 @@ export function useNeoBookmarks() {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setBookmarks(JSON.parse(stored));
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setBookmarks(parsed.filter((b) => b && typeof b.id === "string"));
+        }
+      }
     } catch {}
   }, []);
 

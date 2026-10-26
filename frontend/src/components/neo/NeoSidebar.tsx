@@ -136,10 +136,11 @@ export function NeoSidebar({
     return history.filter((entry) => {
       if ((entry.topRemedy || "").toLowerCase().includes(q)) return true;
       if (tr(entry.topRemedy || "").toLowerCase().includes(q)) return true;
+      if (!Array.isArray(entry.symptoms)) return false;
       return entry.symptoms.some(
         (s) =>
-          (s.name || "").toLowerCase().includes(q) ||
-          tr(s.name || "").toLowerCase().includes(q)
+          ((s?.name || "").toLowerCase().includes(q)) ||
+          (tr(s?.name || "").toLowerCase().includes(q))
       );
     });
   }, [history, historyFilter, tr]);
@@ -443,12 +444,12 @@ export function NeoSidebar({
                                 <span className="text-[11px] font-medium truncate">{tr(entry.topRemedy)}</span>
                               </div>
                               <div className="flex flex-wrap gap-1 mb-1">
-                                {entry.symptoms.slice(0, 3).map((s) => (
-                                  <span key={s.id} className="text-[9px] px-1 py-0.5 bg-secondary rounded truncate max-w-[100px]">
-                                    {tr(s.name)}
+                                {(Array.isArray(entry.symptoms) ? entry.symptoms : []).slice(0, 3).map((s) => (
+                                  <span key={s?.id || Math.random()} className="text-[9px] px-1 py-0.5 bg-secondary rounded truncate max-w-[100px]">
+                                    {tr(s?.name || "")}
                                   </span>
                                 ))}
-                                {entry.symptoms.length > 3 && (
+                                {(Array.isArray(entry.symptoms) ? entry.symptoms.length : 0) > 3 && (
                                   <span className="text-[9px] text-muted-foreground">+{num(entry.symptoms.length - 3)}</span>
                                 )}
                               </div>
