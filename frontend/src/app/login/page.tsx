@@ -2,6 +2,7 @@
 
 import { useState, FormEvent, useEffect, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles, Eye, EyeOff, ArrowLeft, Loader2, LogIn, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,13 @@ function LoginContent() {
           <Link href="/" className="text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <Sparkles className="h-5 w-5 text-primary" />
+          <Image
+            src="/icon-192.png"
+            alt="NeoAI"
+            width={24}
+            height={24}
+            className="h-6 w-6 rounded-md object-cover"
+          />
           <span className="text-sm font-semibold flex-1">{isBn ? "নিও জোন" : "Neo Zone"}</span>
           <LanguageSwitcher />
           <ThemeSwitcher />
@@ -85,9 +92,13 @@ function LoginContent() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-              <Sparkles className="h-8 w-8 text-primary" />
-            </div>
+            <Image
+              src="/icon-192.png"
+              alt="NeoAI"
+              width={64}
+              height={64}
+              className="h-16 w-16 rounded-2xl object-cover shadow-lg mb-4"
+            />
             <h1 className="text-2xl font-bold">
               {mode === "login"
                 ? (isBn ? "নিও জোনে লগইন" : "Login to Neo Zone")

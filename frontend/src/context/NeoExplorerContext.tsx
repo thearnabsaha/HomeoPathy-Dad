@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   type ReactNode,
 } from "react";
 import type { RankingResult, AIAnalysis } from "@/lib/types";
@@ -57,11 +58,15 @@ export function NeoExplorerProvider({ children }: { children: ReactNode }) {
   const [history, setHistory] = useState<NeoHistoryEntry[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
+  const stateCacheRef = useRef<Partial<NeoExplorerState>>({});
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        stateCacheRef.current = parsed;
         if (parsed.selectedSymptoms) setSelectedSymptomsRaw(parsed.selectedSymptoms);
         if (parsed.activeChapter) setActiveChapterRaw(parsed.activeChapter);
         if (parsed.selectedSymptomId) setSelectedSymptomIdRaw(parsed.selectedSymptomId);
@@ -74,15 +79,22 @@ export function NeoExplorerProvider({ children }: { children: ReactNode }) {
       /* ignore */
     }
     setHydrated(true);
+
+    return () => {
+      if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
+    };
   }, []);
 
   const persist = useCallback((state: Partial<NeoExplorerState>) => {
-    try {
-      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...current, ...state }));
-    } catch {
-      /* storage full */
-    }
+    Object.assign(stateCacheRef.current, state);
+    if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
+    persistTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stateCacheRef.current));
+      } catch {
+        /* storage full */
+      }
+    }, 400);
   }, []);
 
   const setSelectedSymptoms = useCallback((s: { id: string; name: string }[]) => {
@@ -137,16 +149,25 @@ export function NeoExplorerProvider({ children }: { children: ReactNode }) {
   const saveToHistory = useCallback(() => {
     if (selectedSymptoms.length === 0) return;
     const topRemedy = ranking?.rankedRemedies?.[0]?.name || aiAnalysis?.remedies?.[0]?.name || "—";
+    const lightweightRanking = ranking
+      ? {
+          ...ranking,
+          rankedRemedies: ranking.rankedRemedies.slice(0, 15).map((r) => ({
+            ...r,
+            coverageDetails: r.coverageDetails.slice(0, 10),
+          })),
+        }
+      : null;
     const entry: NeoHistoryEntry = {
       id: Date.now().toString(36),
       symptoms: [...selectedSymptoms],
-      ranking,
+      ranking: lightweightRanking,
       aiAnalysis,
       topRemedy,
       timestamp: new Date().toISOString(),
     };
     setHistory((prev) => {
-      const next = [entry, ...prev].slice(0, 50);
+      const next = [entry, ...prev].slice(0, 30);
       try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* */ }
       return next;
     });

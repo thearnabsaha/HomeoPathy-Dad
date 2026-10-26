@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronRight, ChevronDown, Square, CheckSquare, Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -142,13 +142,17 @@ export function NeoSymptomTree({
 
   const { symptom, breadcrumb, remedies } = symptomDetail;
 
-  const tr = (text: string) => (language === "bn" ? translateRepertory(text) : text);
+  const tr = useCallback(
+    (text: string) => (language === "bn" ? translateRepertory(text) : text),
+    [language]
+  );
 
-  const sortedSubSymptoms = symptom.subSymptoms
-    ? [...symptom.subSymptoms]
-        .map((s) => ({ ...s, _sort: tr(s.name) }))
-        .sort((a, b) => a._sort.localeCompare(b._sort))
-    : [];
+  const sortedSubSymptoms = useMemo(() => {
+    if (!symptom.subSymptoms) return [];
+    return [...symptom.subSymptoms]
+      .map((s) => ({ ...s, _sort: tr(s.name) }))
+      .sort((a, b) => a._sort.localeCompare(b._sort));
+  }, [symptom.subSymptoms, tr]);
 
   const sortedRemedies = remedies;
 

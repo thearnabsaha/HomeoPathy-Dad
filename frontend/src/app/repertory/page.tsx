@@ -6,6 +6,7 @@ import { translateRepertory, toBengaliNumeral } from "@/i18n/repertoryBn";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import Link from "next/link";
+import Image from "next/image";
 import {
   BookOpen, ChevronRight, Layers, FolderOpen, Stethoscope, Pill,
   Star, RotateCcw, Sparkles, ArrowLeft, Clock, Check, Loader2, Edit3, Save, X, Trash2,
@@ -248,7 +249,13 @@ function RepertoryContent() {
         <div className="flex h-full items-center justify-between px-3 sm:px-4">
           <div className="flex items-center gap-2">
             <Link href="/"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link>
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Image
+              src="/icon-192.png"
+              alt="NeoAI"
+              width={24}
+              height={24}
+              className="h-6 w-6 rounded-md object-cover"
+            />
             <span className="font-bold text-sm">{isBn ? "নিও রেপার্টরি" : "Neo Repertory"}</span>
           </div>
           <div className="flex items-center gap-2">

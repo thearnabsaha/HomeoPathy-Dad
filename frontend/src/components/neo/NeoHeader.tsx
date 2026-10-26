@@ -1,6 +1,7 @@
 "use client";
 
-import { Menu, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NeoSearchBar } from "@/components/neo/NeoSearchBar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -24,9 +25,13 @@ export function NeoHeader({ onToggleSidebar, onSelectSymptom, onSelectRemedy }: 
           <Menu className="h-5 w-5" />
         </Button>
         <div className="flex items-center gap-2 shrink-0">
-          <div className="h-7 w-7 rounded bg-primary flex items-center justify-center">
-            <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
-          </div>
+          <Image
+            src="/icon-192.png"
+            alt="NeoAI Icon"
+            width={28}
+            height={28}
+            className="h-7 w-7 rounded-md object-cover shadow-sm"
+          />
           <span className="font-semibold text-sm hidden sm:inline">{isBn ? "নিও জোন" : "Neo Zone"}</span>
         </div>
         <div className="flex-1 flex justify-center min-w-0 px-1">

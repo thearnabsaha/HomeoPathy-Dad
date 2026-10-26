@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, LogOut, User, Mail, Shield, Clock, Sparkles,
@@ -45,7 +46,13 @@ function ProfileContent() {
           <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <Sparkles className="h-5 w-5 text-primary" />
+          <Image
+            src="/icon-192.png"
+            alt="NeoAI"
+            width={24}
+            height={24}
+            className="h-6 w-6 rounded-md object-cover"
+          />
           <span className="text-sm font-semibold flex-1">{isBn ? "প্রোফাইল" : "Profile"}</span>
           <LanguageSwitcher />
           <ThemeSwitcher />

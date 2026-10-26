@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Send, Loader2, RotateCcw, ArrowLeft, Sparkles,
   CheckCircle2, AlertTriangle, Pill, Activity, ClipboardList, ShieldAlert,
@@ -87,7 +88,13 @@ function ConsultContent() {
           <Link href="/" className="text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <Sparkles className="h-5 w-5 text-primary" />
+          <Image
+            src="/icon-192.png"
+            alt="NeoAI"
+            width={24}
+            height={24}
+            className="h-6 w-6 rounded-md object-cover"
+          />
           <div className="flex-1 min-w-0">
             <h1 className="text-sm font-semibold truncate">{isBn ? "NeoAI পরামর্শ" : "NeoAI Consultation"}</h1>
             <div className="flex items-center gap-2">

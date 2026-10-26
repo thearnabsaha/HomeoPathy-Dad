@@ -42,6 +42,7 @@ export function NeoSearchBar({ onSelectSymptom, onSelectRemedy }: NeoSearchBarPr
   const wrapperRef = useRef<HTMLDivElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const activeSearchIdRef = useRef(0);
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
 
   useEffect(() => { setPortalRoot(document.body); }, []);
@@ -66,20 +67,24 @@ export function NeoSearchBar({ onSelectSymptom, onSelectRemedy }: NeoSearchBarPr
 
   const doSearch = useCallback(async (q: string) => {
     if (q.length < 2) { setResults({ symptoms: [], remedies: [] }); return; }
+    const searchId = ++activeSearchIdRef.current;
     setLoading(true);
     try {
       const [symRes, remRes] = await Promise.all([
         neoApi.searchSymptoms(q),
         neoApi.searchRemedies(q),
       ]);
+      if (searchId !== activeSearchIdRef.current) return;
       setResults({
         symptoms: symRes.results.slice(0, 8),
         remedies: remRes.results.slice(0, 8),
       });
     } catch {
+      if (searchId !== activeSearchIdRef.current) return;
       setResults({ symptoms: [], remedies: [] });
+    } finally {
+      if (searchId === activeSearchIdRef.current) setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const handleChange = (value: string) => {

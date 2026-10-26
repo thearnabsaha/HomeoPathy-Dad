@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   Stethoscope, BookOpen, Globe, Mic, Zap, Smartphone, Clock,
   ArrowRight, MessageCircle, Search, CheckCircle2, Sparkles, HeartPulse,
@@ -46,9 +47,13 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-4 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
-            </div>
+            <Image
+              src="/icon-192.png"
+              alt="NeoAI"
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-lg object-cover shadow-sm"
+            />
             <span className="font-bold text-sm tracking-tight">NeoAI</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
@@ -257,9 +262,13 @@ export default function LandingPage() {
       <footer className="border-t border-border py-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
-              <Sparkles className="h-3 w-3 text-primary-foreground" />
-            </div>
+            <Image
+              src="/icon-192.png"
+              alt="NeoAI"
+              width={24}
+              height={24}
+              className="h-6 w-6 rounded-md object-cover shadow-sm"
+            />
             <span className="text-xs font-bold tracking-tight">NeoAI</span>
           </div>
           <p className="text-[10px] text-muted-foreground/50 leading-relaxed max-w-xl mx-auto mb-3">

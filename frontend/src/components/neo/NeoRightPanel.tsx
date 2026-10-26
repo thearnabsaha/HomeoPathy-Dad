@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Brain,
   X,
@@ -278,6 +278,77 @@ export function NeoRightPanel({
 
   const tr = (text: string) => (language === "bn" ? translateRepertory(text) : text);
 
+  const topTwoRows = useMemo(() => {
+    if (!ranking?.rankedRemedies) return [];
+    type Row = {
+      symptomId: string;
+      symptomLabel: string;
+      remedyId: string;
+      remedyName: string;
+      rawRank: number;
+    };
+    const groups = new Map<string, Row[]>();
+    for (const rem of ranking.rankedRemedies) {
+      for (const cd of rem.coverageDetails) {
+        const parts: string[] = [];
+        if (cd.conditionName) parts.push(cd.conditionName);
+        if (cd.parentSymptomName) parts.push(cd.parentSymptomName);
+        parts.push(cd.symptomName);
+        const label = parts.join(" > ");
+        const row: Row = {
+          symptomId: cd.symptomId,
+          symptomLabel: label,
+          remedyId: rem.id,
+          remedyName: rem.name,
+          rawRank: cd.grade,
+        };
+        const list = groups.get(cd.symptomId);
+        if (list) list.push(row);
+        else groups.set(cd.symptomId, [row]);
+      }
+    }
+    const flat: Row[] = [];
+    for (const list of groups.values()) {
+      list.sort((a, b) => b.rawRank - a.rawRank);
+      flat.push(...list.slice(0, 2));
+    }
+    return flat;
+  }, [ranking?.rankedRemedies]);
+
+  const allMedicineRows = useMemo(() => {
+    if (!ranking?.rankedRemedies) return [];
+    type Row = {
+      symptomId: string;
+      symptomLabel: string;
+      remedyId: string;
+      remedyName: string;
+      rawRank: number;
+    };
+    const rows: Row[] = [];
+    for (const rem of ranking.rankedRemedies) {
+      for (const cd of rem.coverageDetails) {
+        const parts: string[] = [];
+        if (cd.conditionName) parts.push(cd.conditionName);
+        if (cd.parentSymptomName) parts.push(cd.parentSymptomName);
+        parts.push(cd.symptomName);
+        rows.push({
+          symptomId: cd.symptomId,
+          symptomLabel: parts.join(" > "),
+          remedyId: rem.id,
+          remedyName: rem.name,
+          rawRank: cd.grade,
+        });
+      }
+    }
+    rows.sort((a, b) => {
+      const s = a.symptomLabel.localeCompare(b.symptomLabel);
+      if (s !== 0) return s;
+      if (b.rawRank !== a.rawRank) return b.rawRank - a.rawRank;
+      return a.remedyName.localeCompare(b.remedyName);
+    });
+    return rows.slice(0, 100);
+  }, [ranking?.rankedRemedies]);
+
   const handleRank = async () => {
     if (selectedSymptoms.length === 0) return;
     setLoading(true);
@@ -450,70 +521,33 @@ export function NeoRightPanel({
                   </tr>
                 </thead>
                 <tbody>
-                  {(() => {
-                    // Group ranking entries by the specific matched symptom/sub-symptom, pick top 2 per group by rank desc.
-                    type Row = {
-                      symptomId: string;
-                      symptomLabel: string;
-                      remedyId: string;
-                      remedyName: string;
-                      rawRank: number;
-                    };
-                    const groups = new Map<string, Row[]>();
-                    for (const rem of ranking.rankedRemedies) {
-                      for (const cd of rem.coverageDetails) {
-                        // Build the full hierarchy label: Condition > Symptom > Sub-symptom.
-                        // parentSymptomName is only set when the matched node is a sub-symptom.
-                        const parts: string[] = [];
-                        if (cd.conditionName) parts.push(cd.conditionName);
-                        if (cd.parentSymptomName) parts.push(cd.parentSymptomName);
-                        parts.push(cd.symptomName);
-                        const label = parts.join(" > ");
-                        const row: Row = {
-                          symptomId: cd.symptomId,
-                          symptomLabel: label,
-                          remedyId: rem.id,
-                          remedyName: rem.name,
-                          rawRank: cd.grade,
-                        };
-                        const list = groups.get(cd.symptomId);
-                        if (list) list.push(row);
-                        else groups.set(cd.symptomId, [row]);
-                      }
-                    }
-                    const flat: Row[] = [];
-                    for (const list of groups.values()) {
-                      list.sort((a, b) => b.rawRank - a.rawRank);
-                      flat.push(...list.slice(0, 2));
-                    }
-                    return flat.map((row, i) => {
-                      const rl = getRankLabel(row.rawRank, t);
-                      const RankIcon = rl.icon;
-                      return (
-                        <tr key={`${row.symptomId}-${row.remedyId}-${i}`} className="border-b border-border/30">
-                          <td className="py-1.5 pr-2 text-muted-foreground font-mono">{toBengaliNum(i + 1)}</td>
-                          <td
-                            className="py-1.5 pr-2 text-muted-foreground truncate max-w-[200px]"
-                            title={tr(row.symptomLabel)}
+                  {topTwoRows.map((row, i) => {
+                    const rl = getRankLabel(row.rawRank, t);
+                    const RankIcon = rl.icon;
+                    return (
+                      <tr key={`${row.symptomId}-${row.remedyId}-${i}`} className="border-b border-border/30">
+                        <td className="py-1.5 pr-2 text-muted-foreground font-mono">{toBengaliNum(i + 1)}</td>
+                        <td
+                          className="py-1.5 pr-2 text-muted-foreground truncate max-w-[200px]"
+                          title={tr(row.symptomLabel)}
+                        >
+                          {tr(row.symptomLabel)}
+                        </td>
+                        <td className="py-1.5 pr-2 font-medium">{tr(row.remedyName)}</td>
+                        <td className="py-1.5">
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[9px] font-semibold",
+                              rl.color
+                            )}
                           >
-                            {tr(row.symptomLabel)}
-                          </td>
-                          <td className="py-1.5 pr-2 font-medium">{tr(row.remedyName)}</td>
-                          <td className="py-1.5">
-                            <span
-                              className={cn(
-                                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[9px] font-semibold",
-                                rl.color
-                              )}
-                            >
-                              <RankIcon className="h-2 w-2" />
-                              {toBengaliNum(row.rawRank)} - {rl.label}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    });
-                  })()}
+                            <RankIcon className="h-2 w-2" />
+                            {toBengaliNum(row.rawRank)} - {rl.label}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -536,39 +570,8 @@ export function NeoRightPanel({
                 </thead>
                 <tbody>
                   {(() => {
-                    type Row = {
-                      symptomId: string;
-                      symptomLabel: string;
-                      remedyId: string;
-                      remedyName: string;
-                      rawRank: number;
-                    };
-                    // Flatten once, then sort by symptom label (so same-symptom rows cluster), then by rank desc inside each symptom.
-                    const rows: Row[] = [];
-                    for (const rem of ranking.rankedRemedies) {
-                      for (const cd of rem.coverageDetails) {
-                        const parts: string[] = [];
-                        if (cd.conditionName) parts.push(cd.conditionName);
-                        if (cd.parentSymptomName) parts.push(cd.parentSymptomName);
-                        parts.push(cd.symptomName);
-                        rows.push({
-                          symptomId: cd.symptomId,
-                          symptomLabel: parts.join(" > "),
-                          remedyId: rem.id,
-                          remedyName: rem.name,
-                          rawRank: cd.grade,
-                        });
-                      }
-                    }
-                    rows.sort((a, b) => {
-                      const s = a.symptomLabel.localeCompare(b.symptomLabel);
-                      if (s !== 0) return s;
-                      if (b.rawRank !== a.rawRank) return b.rawRank - a.rawRank;
-                      return a.remedyName.localeCompare(b.remedyName);
-                    });
-
                     let prevSymptomId: string | null = null;
-                    return rows.map((row, i) => {
+                    return allMedicineRows.map((row, i) => {
                       const rl = getRankLabel(row.rawRank, t);
                       const RankIcon = rl.icon;
                       const newGroup = row.symptomId !== prevSymptomId;

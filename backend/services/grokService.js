@@ -4,9 +4,7 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const MODEL_CASCADE = [
   'openai/gpt-oss-120b',
-  'openai/gpt-oss-20b',
   'llama-3.3-70b-versatile',
-  'openai/gpt-oss-safeguard-20b',
 ];
 
 function log(level, msg, data) {
@@ -145,7 +143,7 @@ async function callGroqAPI(messages) {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
-          timeout: 30000,
+          timeout: 15000,
         }
       );
 

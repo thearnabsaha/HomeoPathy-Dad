@@ -4,29 +4,51 @@ const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const MODEL_CASCADE = [
   "openai/gpt-oss-120b",
-  "openai/gpt-oss-20b",
   "llama-3.3-70b-versatile",
-  "openai/gpt-oss-safeguard-20b",
 ];
 
-function buildAnalyzePrompt(symptoms: string[]) {
-  const text = symptoms.join(" ").toLowerCase();
-  const keywords = text.split(/[\s,→.;:?!]+/).filter((w) => w.length > 2);
+function getTopRemediesForText(text: string, limit: number): string {
+  const keywords = text.toLowerCase().split(/[\s,→.;:?!]+/).filter((w) => w.length > 2).slice(0, 15);
+  if (keywords.length === 0) {
+    return neoRemediesData.remedies.slice(0, limit).map((r) => `${r.name} (${r.abbr})`).join(", ");
+  }
+
   const rubrics = getNeoRubrics();
   const remedyById = getNeoRemedyById();
   const scores = new Map<string, number>();
-  for (const [symId, entries] of Object.entries(rubrics)) {
-    const symWords = symId.replace(/-/g, " ").split(" ");
+
+  for (const symId in rubrics) {
     let match = 0;
-    for (const kw of keywords) { if (symWords.some((sw) => sw.includes(kw))) match++; }
-    if (match > 0 && Array.isArray(entries)) {
-      for (const e of entries) scores.set(e.remedyId, (scores.get(e.remedyId) || 0) + e.grade * match);
+    for (const kw of keywords) {
+      if (symId.includes(kw)) match++;
+    }
+    if (match > 0) {
+      const entries = rubrics[symId];
+      if (Array.isArray(entries)) {
+        for (let i = 0; i < entries.length; i++) {
+          const e = entries[i];
+          scores.set(e.remedyId, (scores.get(e.remedyId) || 0) + e.grade * match);
+        }
+      }
     }
   }
-  const top = [...scores.entries()].sort((a, b) => b[1] - a[1]).slice(0, 40)
-    .map(([rid]) => { const r = remedyById.get(rid); return r ? `${r.name} (${r.abbr})` : null; })
+
+  const top = [...scores.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([rid]) => {
+      const r = remedyById.get(rid);
+      return r ? `${r.name} (${r.abbr})` : null;
+    })
     .filter(Boolean);
-  const dbList = top.length > 0 ? top.join(", ") : neoRemediesData.remedies.slice(0, 40).map((r) => `${r.name} (${r.abbr})`).join(", ");
+
+  return top.length > 0
+    ? top.join(", ")
+    : neoRemediesData.remedies.slice(0, limit).map((r) => `${r.name} (${r.abbr})`).join(", ");
+}
+
+function buildAnalyzePrompt(symptoms: string[]) {
+  const dbList = getTopRemediesForText(symptoms.join(" "), 40);
 
   return `আপনি ডাঃ NeoAI, একজন বিশেষজ্ঞ হোমিওপ্যাথিক চিকিৎসক। আপনি NeoAI সিস্টেমের অংশ যেটি একটি বিশেষ ক্লাসিক্যাল রেপার্টরি ডাটাবেসে প্রশিক্ষিত। আপনার ডাটাবেসে ৪৩টি রেপার্টরি বিভাগ, ৫২১টি অবস্থা, ৭২৩৯টি লক্ষণ, ৪৯০০টি উপ-লক্ষণ এবং ১১০৩টি ওষুধ রয়েছে (মোট ৯৫,৯০৭টি ওষুধ-লক্ষণ সম্পর্ক)।
 
@@ -69,22 +91,7 @@ RULES:
 }
 
 function buildChatPrompt(message: string) {
-  const keywords = message.toLowerCase().split(/[\s,→.;:?!]+/).filter((w) => w.length > 2);
-  const rubrics = getNeoRubrics();
-  const remedyById = getNeoRemedyById();
-  const scores = new Map<string, number>();
-  for (const [symId, entries] of Object.entries(rubrics)) {
-    const symWords = symId.replace(/-/g, " ").split(" ");
-    let match = 0;
-    for (const kw of keywords) { if (symWords.some((sw) => sw.includes(kw))) match++; }
-    if (match > 0 && Array.isArray(entries)) {
-      for (const e of entries) scores.set(e.remedyId, (scores.get(e.remedyId) || 0) + e.grade * match);
-    }
-  }
-  const top = [...scores.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30)
-    .map(([rid]) => { const r = remedyById.get(rid); return r ? `${r.name} (${r.abbr})` : null; })
-    .filter(Boolean);
-  const dbList = top.length > 0 ? top.join(", ") : neoRemediesData.remedies.slice(0, 30).map((r) => `${r.name} (${r.abbr})`).join(", ");
+  const dbList = getTopRemediesForText(message, 30);
 
   return `আপনি NeoAI, একটি উন্নত হোমিওপ্যাথিক পরামর্শদাতা AI। আপনি একটি ক্লাসিক্যাল রেপার্টরি ডাটাবেসে প্রশিক্ষিত যাতে ৪৩টি রেপার্টরি, ৭২৩৯টি লক্ষণ এবং ১১০৩টি ওষুধ রয়েছে।
 
@@ -117,23 +124,8 @@ Do NOT wrap JSON in markdown code fences. If no remedies match, still include an
 }
 
 function buildConsultPrompt(conversationHistory: { role: string; content: string }[]) {
-  const allText = conversationHistory.map((m) => m.content).join(" ").toLowerCase();
-  const keywords = allText.split(/[\s,→.;:?!]+/).filter((w) => w.length > 2);
-  const rubrics = getNeoRubrics();
-  const remedyById = getNeoRemedyById();
-  const scores = new Map<string, number>();
-  for (const [symId, entries] of Object.entries(rubrics)) {
-    const symWords = symId.replace(/-/g, " ").split(" ");
-    let match = 0;
-    for (const kw of keywords) { if (symWords.some((sw) => sw.includes(kw))) match++; }
-    if (match > 0 && Array.isArray(entries)) {
-      for (const e of entries) scores.set(e.remedyId, (scores.get(e.remedyId) || 0) + e.grade * match);
-    }
-  }
-  const top = [...scores.entries()].sort((a, b) => b[1] - a[1]).slice(0, 50)
-    .map(([rid]) => { const r = remedyById.get(rid); return r ? `${r.name} (${r.abbr})` : null; })
-    .filter(Boolean);
-  const dbList = top.length > 0 ? top.join(", ") : neoRemediesData.remedies.slice(0, 50).map((r) => `${r.name} (${r.abbr})`).join(", ");
+  const allText = conversationHistory.map((m) => m.content).join(" ");
+  const dbList = getTopRemediesForText(allText, 50);
 
   return `আপনি ডাঃ NeoAI, একজন উন্নত হোমিওপ্যাথিক চিকিৎসক। আপনি NeoAI ক্লাসিক্যাল রেপার্টরি সিস্টেমের অংশ। আপনার ডাটাবেসে ৪৩টি রেপার্টরি বিভাগ, ৫২১টি অবস্থা, ৭২৩৯টি লক্ষণ এবং ১১০৩টি ওষুধ রয়েছে।
 
@@ -197,6 +189,8 @@ async function callNeoGroqAPI(messages: Message[]) {
 
   for (const model of MODEL_CASCADE) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
       const response = await fetch(GROQ_API_URL, {
         method: "POST",
         headers: {
@@ -209,7 +203,9 @@ async function callNeoGroqAPI(messages: Message[]) {
           temperature: 0.7,
           max_tokens: 4096,
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!response.ok) continue;
 
