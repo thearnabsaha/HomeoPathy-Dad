@@ -112,6 +112,18 @@ export function NeoSymptomTree({
     [childrenCache]
   );
 
+  const tr = useCallback(
+    (text: string) => (language === "bn" ? translateRepertory(text) : text),
+    [language]
+  );
+
+  const sortedSubSymptoms = useMemo(() => {
+    if (!symptomDetail?.symptom?.subSymptoms) return [];
+    return [...symptomDetail.symptom.subSymptoms]
+      .map((s) => ({ ...s, _sort: s?.name ? tr(s.name) : "" }))
+      .sort((a, b) => (a._sort || "").localeCompare(b._sort || ""));
+  }, [symptomDetail?.symptom?.subSymptoms, tr]);
+
   if (!selectedSymptomId) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center p-8">
@@ -141,19 +153,6 @@ export function NeoSymptomTree({
   if (!symptomDetail) return null;
 
   const { symptom, breadcrumb = [], remedies = [] } = symptomDetail;
-
-  const tr = useCallback(
-    (text: string) => (language === "bn" ? translateRepertory(text) : text),
-    [language]
-  );
-
-  const sortedSubSymptoms = useMemo(() => {
-    if (!symptom?.subSymptoms) return [];
-    return [...symptom.subSymptoms]
-      .map((s) => ({ ...s, _sort: s?.name ? tr(s.name) : "" }))
-      .sort((a, b) => (a._sort || "").localeCompare(b._sort || ""));
-  }, [symptom?.subSymptoms, tr]);
-
   const sortedRemedies = remedies;
 
   return (
