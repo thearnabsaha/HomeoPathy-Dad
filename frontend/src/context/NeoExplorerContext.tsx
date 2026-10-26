@@ -152,9 +152,9 @@ export function NeoExplorerProvider({ children }: { children: ReactNode }) {
     const lightweightRanking = ranking
       ? {
           ...ranking,
-          rankedRemedies: ranking.rankedRemedies.slice(0, 15).map((r) => ({
+          rankedRemedies: (ranking.rankedRemedies || []).slice(0, 15).map((r) => ({
             ...r,
-            coverageDetails: r.coverageDetails.slice(0, 10),
+            coverageDetails: Array.isArray(r?.coverageDetails) ? r.coverageDetails.slice(0, 10) : [],
           })),
         }
       : null;

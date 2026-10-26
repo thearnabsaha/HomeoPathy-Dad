@@ -289,18 +289,20 @@ export function NeoRightPanel({
     };
     const groups = new Map<string, Row[]>();
     for (const rem of ranking.rankedRemedies) {
+      if (!Array.isArray(rem?.coverageDetails)) continue;
       for (const cd of rem.coverageDetails) {
+        if (!cd) continue;
         const parts: string[] = [];
         if (cd.conditionName) parts.push(cd.conditionName);
         if (cd.parentSymptomName) parts.push(cd.parentSymptomName);
-        parts.push(cd.symptomName);
+        if (cd.symptomName) parts.push(cd.symptomName);
         const label = parts.join(" > ");
         const row: Row = {
-          symptomId: cd.symptomId,
+          symptomId: cd.symptomId || "",
           symptomLabel: label,
-          remedyId: rem.id,
-          remedyName: rem.name,
-          rawRank: cd.grade,
+          remedyId: rem.id || "",
+          remedyName: rem.name || "",
+          rawRank: cd.grade || 0,
         };
         const list = groups.get(cd.symptomId);
         if (list) list.push(row);
@@ -326,25 +328,27 @@ export function NeoRightPanel({
     };
     const rows: Row[] = [];
     for (const rem of ranking.rankedRemedies) {
+      if (!Array.isArray(rem?.coverageDetails)) continue;
       for (const cd of rem.coverageDetails) {
+        if (!cd) continue;
         const parts: string[] = [];
         if (cd.conditionName) parts.push(cd.conditionName);
         if (cd.parentSymptomName) parts.push(cd.parentSymptomName);
-        parts.push(cd.symptomName);
+        if (cd.symptomName) parts.push(cd.symptomName);
         rows.push({
-          symptomId: cd.symptomId,
+          symptomId: cd.symptomId || "",
           symptomLabel: parts.join(" > "),
-          remedyId: rem.id,
-          remedyName: rem.name,
-          rawRank: cd.grade,
+          remedyId: rem.id || "",
+          remedyName: rem.name || "",
+          rawRank: cd.grade || 0,
         });
       }
     }
     rows.sort((a, b) => {
-      const s = a.symptomLabel.localeCompare(b.symptomLabel);
+      const s = (a.symptomLabel || "").localeCompare(b.symptomLabel || "");
       if (s !== 0) return s;
       if (b.rawRank !== a.rawRank) return b.rawRank - a.rawRank;
-      return a.remedyName.localeCompare(b.remedyName);
+      return (a.remedyName || "").localeCompare(b.remedyName || "");
     });
     return rows.slice(0, 100);
   }, [ranking?.rankedRemedies]);

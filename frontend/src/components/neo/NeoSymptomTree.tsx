@@ -140,7 +140,7 @@ export function NeoSymptomTree({
 
   if (!symptomDetail) return null;
 
-  const { symptom, breadcrumb, remedies } = symptomDetail;
+  const { symptom, breadcrumb = [], remedies = [] } = symptomDetail;
 
   const tr = useCallback(
     (text: string) => (language === "bn" ? translateRepertory(text) : text),
@@ -148,11 +148,11 @@ export function NeoSymptomTree({
   );
 
   const sortedSubSymptoms = useMemo(() => {
-    if (!symptom.subSymptoms) return [];
+    if (!symptom?.subSymptoms) return [];
     return [...symptom.subSymptoms]
-      .map((s) => ({ ...s, _sort: tr(s.name) }))
-      .sort((a, b) => a._sort.localeCompare(b._sort));
-  }, [symptom.subSymptoms, tr]);
+      .map((s) => ({ ...s, _sort: s?.name ? tr(s.name) : "" }))
+      .sort((a, b) => (a._sort || "").localeCompare(b._sort || ""));
+  }, [symptom?.subSymptoms, tr]);
 
   const sortedRemedies = remedies;
 
@@ -160,7 +160,7 @@ export function NeoSymptomTree({
     <div className="animate-fade-in">
       {/* Breadcrumb */}
       <div className="flex items-center gap-1.5 px-4 py-2 border-b border-border text-xs text-muted-foreground">
-        {breadcrumb.map((b, i) => (
+        {(breadcrumb || []).map((b, i) => (
           <span key={b.id} className="flex items-center gap-1.5">
             {i > 0 && <ChevronRight className="h-3 w-3" />}
             <button

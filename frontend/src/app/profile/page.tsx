@@ -67,7 +67,7 @@ function ProfileContent() {
               <User className="h-8 w-8 text-primary" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-xl font-bold truncate">{user?.name}</h1>
+              <h1 className="text-xl font-bold truncate">{user?.name || user?.email?.split("@")[0] || "User"}</h1>
               <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
             </div>
           </div>

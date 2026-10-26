@@ -81,7 +81,9 @@ export default function LandingPage() {
                   <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
                     <User className="h-3 w-3 text-primary" />
                   </div>
-                  <span className="hidden sm:inline">{user.name.split(" ")[0]}</span>
+                  <span className="hidden sm:inline">
+                    {user?.name ? user.name.split(" ")[0] : (user?.email?.split("@")[0] || "")}
+                  </span>
                 </Button>
               </Link>
             ) : (
