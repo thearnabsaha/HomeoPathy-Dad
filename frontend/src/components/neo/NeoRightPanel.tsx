@@ -123,9 +123,11 @@ const RankedRemedyCard = memo(function RankedRemedyCard({
             >
               {tr(remedy.name)}
             </button>
-            <span className="text-[10px] text-muted-foreground flex-shrink-0">
-              {remedy.abbr}
-            </span>
+            {!isBn && remedy.abbr && (
+              <span className="text-[10px] text-muted-foreground flex-shrink-0">
+                {remedy.abbr}
+              </span>
+            )}
             <AudioReader text={`${remedy.name}. ${remedy.description?.substring(0, 80)}`} />
           </div>
           <div className="flex items-center gap-2 mt-1.5">

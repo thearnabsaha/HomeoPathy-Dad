@@ -140,9 +140,11 @@ export function NeoChatWidget() {
                             <span className="text-xs font-medium">
                               {language === "bn" ? translateRepertory(r.name) : r.name}
                             </span>
-                            <Badge variant="secondary" className="text-[10px] h-4">
-                              {r.abbr}
-                            </Badge>
+                            {language !== "bn" && r.abbr && (
+                              <Badge variant="secondary" className="text-[10px] h-4">
+                                {r.abbr}
+                              </Badge>
+                            )}
                           </div>
                           <ConfidenceBar value={r.confidence} className="mb-1" />
                           <p className="text-[10px] text-muted-foreground">{r.brief}</p>

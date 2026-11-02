@@ -96,7 +96,9 @@ const RemedyItem = memo(function RemedyItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           <span className="text-sm font-medium">{tr(rem.name)}</span>
-          <span className="text-xs text-muted-foreground">({rem.abbr})</span>
+          {!isBn && rem.abbr && (
+            <span className="text-xs text-muted-foreground">({rem.abbr})</span>
+          )}
         </div>
         <p className="text-xs text-muted-foreground line-clamp-1">
           {isBn ? (rem.descriptionBn || tr(rem.description)) : rem.description}

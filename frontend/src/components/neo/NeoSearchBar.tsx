@@ -155,7 +155,9 @@ export function NeoSearchBar({ onSelectSymptom, onSelectRemedy }: NeoSearchBarPr
             <button key={r.id} onClick={() => selectRemedy(r.id, r.name)}
               className={`flex items-center gap-3 w-full px-3 text-left hover:bg-accent active:bg-accent rounded-lg transition-colors ${large ? "py-3" : "py-1.5"}`}>
               <span className={large ? "text-base flex-1" : "text-sm"}>{bn(r.name)}</span>
-              <span className="text-xs text-muted-foreground shrink-0">{r.abbr}</span>
+              {!isBn && r.abbr && (
+                <span className="text-xs text-muted-foreground shrink-0">{r.abbr}</span>
+              )}
             </button>
           ))}
         </div>
