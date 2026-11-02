@@ -32,6 +32,7 @@ export interface NeoRepertorySummary {
   name: string;
   order: number;
   conditionCount: number;
+  conditions?: NeoConditionSummary[];
 }
 
 const API_BASE = "/api";

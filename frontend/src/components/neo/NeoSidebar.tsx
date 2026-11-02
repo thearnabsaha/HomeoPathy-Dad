@@ -116,6 +116,13 @@ export function NeoSidebar({
   useEffect(() => {
     neoApi.getSymptoms().then((data) => {
       setRepertories(data.chapters);
+      const initialCache: Record<string, ChildItem[]> = {};
+      for (const ch of data.chapters) {
+        if (Array.isArray(ch.conditions)) {
+          initialCache[ch.id] = ch.conditions as unknown as ChildItem[];
+        }
+      }
+      setChildrenCache((prev) => ({ ...initialCache, ...prev }));
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
