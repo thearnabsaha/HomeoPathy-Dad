@@ -5989,32 +5989,32 @@ export function translateRepertory(text: string): string {
   return result;
 }
 
-export const repBnToEn: Record<string, string> = {};
-for (const [en, bn] of Object.entries(repBn)) {
-  repBnToEn[bn] = en;
-}
-for (const [en, bn] of Object.entries(wordBn)) {
-  repBnToEn[bn] = en;
+let _repBnToEn: Record<string, string> | null = null;
+export function getRepBnToEn(): Record<string, string> {
+  if (_repBnToEn) return _repBnToEn;
+  _repBnToEn = {};
+  for (const [en, bn] of Object.entries(repBn)) {
+    _repBnToEn[bn] = en;
+  }
+  for (const [en, bn] of Object.entries(wordBn)) {
+    _repBnToEn[bn] = en;
+  }
+  return _repBnToEn;
 }
 
-export function toBengaliNumeral(n: number | string): string {
-  const digits = "০১২৩৪৫৬৭৮৯";
-  return String(n).replace(/\d/g, (d) => digits[parseInt(d)]);
-}
+export const repBnToEn: Record<string, string> = new Proxy({} as Record<string, string>, {
+  get(_, prop: string) {
+    return getRepBnToEn()[prop];
+  },
+  has(_, prop: string) {
+    return prop in getRepBnToEn();
+  },
+  ownKeys(_) {
+    return Reflect.ownKeys(getRepBnToEn());
+  },
+  getOwnPropertyDescriptor(_, prop: string) {
+    return Reflect.getOwnPropertyDescriptor(getRepBnToEn(), prop);
+  },
+});
 
-export {
-  medDescBn,
-  medDosageBn,
-  medKeynotesBn,
-  medAffinityBn,
-  medWorseBn,
-  medBetterBn,
-} from "./medicineBn";
-
-import { medDescBn } from "./medicineBn";
-
-export function translateMedicineDesc(name: string): string {
-  if (!name) return name;
-  const upper = name.toUpperCase();
-  return medDescBn[upper] || medDescBn[name] || translateRepertory(name);
-}
+export { toBengaliNumeral } from "./numeral";

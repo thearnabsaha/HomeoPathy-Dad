@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n/useTranslation";
-import { toBengaliNumeral } from "@/i18n/repertoryBn";
+import { toBengaliNumeral } from "@/i18n/numeral";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { useNeoAuth } from "@/hooks/useNeoAuth";

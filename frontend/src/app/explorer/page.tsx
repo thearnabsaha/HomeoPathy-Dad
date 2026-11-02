@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef, useMemo } from "react";
 import { NeoHeader } from "@/components/neo/NeoHeader";
 import { NeoSidebar } from "@/components/neo/NeoSidebar";
 import { NeoRightPanel } from "@/components/neo/NeoRightPanel";
@@ -64,6 +64,11 @@ function ExplorerContent() {
     [router]
   );
 
+  const selectedSymptomIds = useMemo(
+    () => selectedSymptoms.map((s) => s.id),
+    [selectedSymptoms]
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <NeoHeader
@@ -97,7 +102,7 @@ function ExplorerContent() {
           ) : (
             <NeoSymptomTree
               selectedSymptomId={selectedSymptomId}
-              selectedSymptoms={selectedSymptoms.map((s) => s.id)}
+              selectedSymptoms={selectedSymptomIds}
               onToggleSymptom={toggleSymptom}
               onViewRemedies={handleSelectSymptom}
               onViewRemedy={handleViewRemedy}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import {
   Brain,
   X,
@@ -20,7 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/i18n/useTranslation";
 import { neoApi } from "@/lib/neoApi";
 import { cn } from "@/lib/utils";
-import { translateRepertory, toBengaliNumeral, medDescBn, medDosageBn, medWorseBn, medBetterBn } from "@/i18n/repertoryBn";
+import { translateRepertory } from "@/i18n/repertoryBn";
+import { toBengaliNumeral } from "@/i18n/numeral";
 import { AudioReader } from "@/components/AudioReader";
 import type { AIAnalysis, RankingResult, RankedRemedy } from "@/lib/types";
 
@@ -74,7 +75,7 @@ function GradeIndicator({ grade, isBn }: { grade: number; isBn?: boolean }) {
   );
 }
 
-function RankedRemedyCard({
+const RankedRemedyCard = memo(function RankedRemedyCard({
   remedy,
   language,
   t,
@@ -169,11 +170,10 @@ function RankedRemedyCard({
       </button>
 
       {expanded && (() => {
-        const nu = remedy.name.toUpperCase();
-        const descBn = medDescBn[nu] || medDescBn[remedy.name];
-        const dosBn = medDosageBn[nu] || medDosageBn[remedy.name];
-        const worBn = medWorseBn[nu] || medWorseBn[remedy.name];
-        const betBn = medBetterBn[nu] || medBetterBn[remedy.name];
+        const descBn = remedy.descriptionBn;
+        const dosBn = remedy.dosageBn;
+        const worBn = remedy.modalitiesBn?.worse;
+        const betBn = remedy.modalitiesBn?.better;
         return (
         <div className="mt-2 space-y-2 animate-slide-up">
           <p className="text-[11px] text-muted-foreground leading-relaxed">
@@ -196,16 +196,16 @@ function RankedRemedyCard({
           <div className="text-[10px] text-muted-foreground">
             <span className="font-medium">{t("remedy.dosage")}:</span> {isBn && dosBn ? dosBn : tr(remedy.dosage)}
           </div>
-          {remedy.modalities && (
+          {(remedy.modalities || remedy.modalitiesBn) && (
             <div className="grid grid-cols-2 gap-2 text-[10px]">
               <div>
                 <span className="font-medium text-red-400/80">{t("rank.worse")}:</span>
                 <p className="text-muted-foreground mt-0.5">
                   {isBn && Array.isArray(worBn) && worBn.length > 0
                     ? worBn.slice(0, 4).join(", ")
-                    : Array.isArray(remedy.modalities.worse)
+                    : Array.isArray(remedy.modalities?.worse)
                     ? remedy.modalities.worse.slice(0, 4).map((w) => tr(w)).join(", ")
-                    : typeof remedy.modalities.worse === "string"
+                    : typeof remedy.modalities?.worse === "string"
                     ? tr(remedy.modalities.worse)
                     : ""}
                 </p>
@@ -215,9 +215,9 @@ function RankedRemedyCard({
                 <p className="text-muted-foreground mt-0.5">
                   {isBn && Array.isArray(betBn) && betBn.length > 0
                     ? betBn.slice(0, 4).join(", ")
-                    : Array.isArray(remedy.modalities.better)
+                    : Array.isArray(remedy.modalities?.better)
                     ? remedy.modalities.better.slice(0, 4).map((b) => tr(b)).join(", ")
-                    : typeof remedy.modalities.better === "string"
+                    : typeof remedy.modalities?.better === "string"
                     ? tr(remedy.modalities.better)
                     : ""}
                 </p>
@@ -229,7 +229,7 @@ function RankedRemedyCard({
       })()}
     </div>
   );
-}
+});
 
 function AnalysisSkeleton() {
   return (

@@ -31,6 +31,7 @@ export interface RemedyMatch {
   strength: number;
   rawRank: number;
   description: string;
+  descriptionBn?: string;
 }
 
 export interface RemedySummary {
@@ -47,9 +48,16 @@ export interface RemedyDetail {
     name: string;
     abbr: string;
     description: string;
+    descriptionBn?: string;
     commonSymptoms: string[];
     dosage: string;
+    dosageBn?: string;
     modalities: { worse: string[]; better: string[] };
+    modalitiesBn?: { worse: string[]; better: string[] };
+    keynotes?: string;
+    keynotesBn?: string;
+    affinity?: string;
+    affinityBn?: string;
     relatedRemedies: { id: string; name: string; abbr: string }[];
   };
 }
@@ -115,8 +123,11 @@ export interface RankedRemedy {
   name: string;
   abbr: string;
   description: string;
+  descriptionBn?: string;
   dosage: string;
+  dosageBn?: string;
   modalities: { worse: string[]; better: string[] };
+  modalitiesBn?: { worse: string[]; better: string[] };
   totalScore: number;
   symptomsCovered: number;
   totalSymptoms: number;

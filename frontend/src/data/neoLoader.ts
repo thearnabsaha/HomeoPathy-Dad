@@ -41,9 +41,16 @@ interface NeoRemedy {
   name: string;
   abbr: string;
   description: string;
+  descriptionBn?: string;
   dosage: string;
+  dosageBn?: string;
+  keynotes?: string;
+  keynotesBn?: string;
+  affinity?: string;
+  affinityBn?: string;
   commonSymptoms: string[];
   modalities: { worse: string[]; better: string[] };
+  modalitiesBn?: { worse: string[]; better: string[] };
 }
 
 type NeoRubrics = Record<string, { remedyId: string; grade: number; rawRank: number }[]>;
@@ -74,10 +81,19 @@ function slugify(s: string): string {
 
 type MedicineDetail = {
   desc: string;
-  modalities: { worse: string[]; better: string[] };
+  descBn?: string;
+  modalities: {
+    worse: string[];
+    better: string[];
+    worseBn?: string[];
+    betterBn?: string[];
+  };
   dosage: string;
+  dosageBn?: string;
   keynotes: string;
+  keynotesBn?: string;
   affinity: string;
+  affinityBn?: string;
 };
 
 let _medDetails: Record<string, MedicineDetail> | null = null;
@@ -236,16 +252,25 @@ function regMeds(
   for (const m of meds) {
     const rid = `neo-med-${m.id}`;
     if (!rMap.has(rid)) {
-      const detail = medDetails[m.name];
+      const detail = medDetails[m.name] || medDetails[m.name.toUpperCase()];
       rMap.set(rid, {
         id: rid, name: m.name,
         abbr: m.name.split(" ").map((w) => w[0]).join("").slice(0, 6) + ".",
         description: detail?.desc || `${m.name} - Classical homeopathic remedy from the repertory database.`,
+        descriptionBn: detail?.descBn,
         dosage: detail?.dosage || "30C or as directed by physician",
+        dosageBn: detail?.dosageBn,
+        keynotes: detail?.keynotes,
+        keynotesBn: detail?.keynotesBn,
+        affinity: detail?.affinity,
+        affinityBn: detail?.affinityBn,
         commonSymptoms: [],
         modalities: detail?.modalities
           ? { worse: detail.modalities.worse || [], better: detail.modalities.better || [] }
           : { worse: [], better: [] },
+        modalitiesBn: detail?.modalities
+          ? { worse: detail.modalities.worseBn || [], better: detail.modalities.betterBn || [] }
+          : undefined,
       });
     }
     if (!rSym.has(rid)) rSym.set(rid, new Set());

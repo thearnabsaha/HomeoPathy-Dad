@@ -121,7 +121,15 @@ export function GET(
       .map(([remedyId, { grade, rawRank }]) => {
         const remedy = remedyById.get(remedyId);
         return remedy
-          ? { id: remedy.id, name: remedy.name, abbr: remedy.abbr, strength: grade, rawRank, description: remedy.description }
+          ? {
+              id: remedy.id,
+              name: remedy.name,
+              abbr: remedy.abbr,
+              strength: grade,
+              rawRank,
+              description: remedy.description,
+              descriptionBn: remedy.descriptionBn,
+            }
           : null;
       })
       .filter(Boolean)
