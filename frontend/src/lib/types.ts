@@ -136,8 +136,27 @@ export interface RankedRemedy {
   coverageDetails: { symptomId: string; symptomName: string; parentSymptomName?: string; conditionName?: string; grade: number }[];
 }
 
+export interface SymptomRemedyMatch {
+  remedyId: string;
+  remedyName: string;
+  grade: number;
+  rawRank: number;
+}
+
+export interface SymptomBreakdownItem {
+  symptomId: string;
+  symptomName: string;
+  parentSymptomName?: string;
+  conditionName?: string;
+  repertoryName?: string;
+  symptomLabel: string;
+  remedies: SymptomRemedyMatch[];
+}
+
 export interface RankingResult {
   totalSymptomsAnalyzed: number;
   totalRemediesFound: number;
   rankedRemedies: RankedRemedy[];
+  symptomBreakdown?: SymptomBreakdownItem[];
 }
+

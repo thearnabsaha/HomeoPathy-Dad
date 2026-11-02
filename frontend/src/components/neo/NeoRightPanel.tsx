@@ -289,7 +289,7 @@ export function NeoRightPanel({
   const tr = (text: string) => (language === "bn" ? translateRepertory(text) : text);
 
   const topTwoRows = useMemo(() => {
-    if (!ranking || !Array.isArray(ranking.rankedRemedies)) return [];
+    if (!ranking) return [];
     type Row = {
       symptomId: string;
       symptomLabel: string;
@@ -297,6 +297,34 @@ export function NeoRightPanel({
       remedyName: string;
       rawRank: number;
     };
+
+    if (Array.isArray(ranking.symptomBreakdown) && ranking.symptomBreakdown.length > 0) {
+      const rows: Row[] = [];
+      for (const sb of ranking.symptomBreakdown) {
+        if (sb.remedies.length > 0) {
+          for (const rem of sb.remedies.slice(0, 2)) {
+            rows.push({
+              symptomId: sb.symptomId,
+              symptomLabel: sb.symptomLabel,
+              remedyId: rem.remedyId,
+              remedyName: rem.remedyName,
+              rawRank: rem.rawRank,
+            });
+          }
+        } else {
+          rows.push({
+            symptomId: sb.symptomId,
+            symptomLabel: sb.symptomLabel,
+            remedyId: "",
+            remedyName: "-",
+            rawRank: 0,
+          });
+        }
+      }
+      return rows;
+    }
+
+    if (!Array.isArray(ranking.rankedRemedies)) return [];
     const groups = new Map<string, Row[]>();
     for (const rem of ranking.rankedRemedies) {
       if (!Array.isArray(rem?.coverageDetails)) continue;
@@ -325,10 +353,10 @@ export function NeoRightPanel({
       flat.push(...list.slice(0, 2));
     }
     return flat;
-  }, [ranking?.rankedRemedies]);
+  }, [ranking]);
 
   const allMedicineRows = useMemo(() => {
-    if (!ranking || !Array.isArray(ranking.rankedRemedies)) return [];
+    if (!ranking) return [];
     type Row = {
       symptomId: string;
       symptomLabel: string;
@@ -336,6 +364,34 @@ export function NeoRightPanel({
       remedyName: string;
       rawRank: number;
     };
+
+    if (Array.isArray(ranking.symptomBreakdown) && ranking.symptomBreakdown.length > 0) {
+      const rows: Row[] = [];
+      for (const sb of ranking.symptomBreakdown) {
+        if (sb.remedies.length > 0) {
+          for (const rem of sb.remedies) {
+            rows.push({
+              symptomId: sb.symptomId,
+              symptomLabel: sb.symptomLabel,
+              remedyId: rem.remedyId,
+              remedyName: rem.remedyName,
+              rawRank: rem.rawRank,
+            });
+          }
+        } else {
+          rows.push({
+            symptomId: sb.symptomId,
+            symptomLabel: sb.symptomLabel,
+            remedyId: "",
+            remedyName: "-",
+            rawRank: 0,
+          });
+        }
+      }
+      return rows;
+    }
+
+    if (!Array.isArray(ranking.rankedRemedies)) return [];
     const rows: Row[] = [];
     for (const rem of ranking.rankedRemedies) {
       if (!Array.isArray(rem?.coverageDetails)) continue;
@@ -360,8 +416,8 @@ export function NeoRightPanel({
       if (b.rawRank !== a.rawRank) return b.rawRank - a.rawRank;
       return (a.remedyName || "").localeCompare(b.remedyName || "");
     });
-    return rows.slice(0, 100);
-  }, [ranking?.rankedRemedies]);
+    return rows;
+  }, [ranking]);
 
   const handleRank = async () => {
     if (selectedSymptoms.length === 0) return;
@@ -547,17 +603,23 @@ export function NeoRightPanel({
                         >
                           {tr(row.symptomLabel)}
                         </td>
-                        <td className="py-1.5 pr-2 font-medium">{tr(row.remedyName)}</td>
+                        <td className="py-1.5 pr-2 font-medium">
+                          {row.remedyName === "-" ? "-" : tr(row.remedyName)}
+                        </td>
                         <td className="py-1.5">
-                          <span
-                            className={cn(
-                              "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[9px] font-semibold",
-                              rl.color
-                            )}
-                          >
-                            <RankIcon className="h-2 w-2" />
-                            {toBengaliNum(row.rawRank)} - {rl.label}
-                          </span>
+                          {row.rawRank > 0 ? (
+                            <span
+                              className={cn(
+                                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[9px] font-semibold",
+                                rl.color
+                              )}
+                            >
+                              <RankIcon className="h-2 w-2" />
+                              {toBengaliNum(row.rawRank)} - {rl.label}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground text-[10px]">-</span>
+                          )}
                         </td>
                       </tr>
                     );
@@ -609,17 +671,23 @@ export function NeoRightPanel({
                               <span aria-hidden="true" className="opacity-30">·</span>
                             )}
                           </td>
-                          <td className="py-1.5 pr-2 font-medium">{tr(row.remedyName)}</td>
+                          <td className="py-1.5 pr-2 font-medium">
+                            {row.remedyName === "-" ? "-" : tr(row.remedyName)}
+                          </td>
                           <td className="py-1.5">
-                            <span
-                              className={cn(
-                                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[9px] font-semibold",
-                                rl.color
-                              )}
-                            >
-                              <RankIcon className="h-2 w-2" />
-                              {toBengaliNum(row.rawRank)} - {rl.label}
-                            </span>
+                            {row.rawRank > 0 ? (
+                              <span
+                                className={cn(
+                                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[9px] font-semibold",
+                                  rl.color
+                                )}
+                              >
+                                <RankIcon className="h-2 w-2" />
+                                {toBengaliNum(row.rawRank)} - {rl.label}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground text-[10px]">-</span>
+                            )}
                           </td>
                         </tr>
                       );

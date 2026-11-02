@@ -67,6 +67,7 @@ let _data: {
   chapters: NeoChapter[];
   remedies: NeoRemedy[];
   rubrics: NeoRubrics;
+  nodeRubrics: Map<string, { remedyId: string; grade: number; rawRank: number }[]>;
   remedyById: Map<string, NeoRemedy>;
   symptomById: Map<string, SymEntry>;
   chapterById: Map<string, NeoChapter>;
@@ -208,8 +209,33 @@ function loadData() {
     }
   }
 
+  const nodeRubrics = new Map<string, { remedyId: string; grade: number; rawRank: number }[]>();
+  for (const ch of chapters) {
+    const chEntries: { remedyId: string; grade: number; rawRank: number }[] = [];
+    for (const cond of ch.conditions) {
+      const condEntries: { remedyId: string; grade: number; rawRank: number }[] = [];
+      for (const sym of cond.symptoms) {
+        const symEntries: { remedyId: string; grade: number; rawRank: number }[] = [];
+        const r = rubrics[sym.id];
+        if (r) symEntries.push(...r);
+        for (const sub of sym.subSymptoms) {
+          const sr = rubrics[sub.id];
+          if (sr) {
+            symEntries.push(...sr);
+            nodeRubrics.set(sub.id, sr);
+          }
+        }
+        nodeRubrics.set(sym.id, symEntries);
+        condEntries.push(...symEntries);
+      }
+      nodeRubrics.set(cond.id, condEntries);
+      chEntries.push(...condEntries);
+    }
+    nodeRubrics.set(ch.id, chEntries);
+  }
+
   _data = {
-    chapters, remedies, rubrics,
+    chapters, remedies, rubrics, nodeRubrics,
     remedyById: new Map(remedies.map((r) => [r.id, r])),
     symptomById, chapterById, remedyToSymptoms,
     symptomSearchIndex: [],
@@ -295,6 +321,24 @@ function regMeds(
 export const neoSymptomsData = { get chapters() { return loadData().chapters; } };
 export const neoRemediesData = { get remedies() { return loadData().remedies; } };
 export function getNeoRubrics() { return loadData().rubrics; }
+export function getNeoNodeRubrics() { return loadData().nodeRubrics; }
+export function getRubricsForNode(nodeId: string): { remedyId: string; grade: number; rawRank: number }[] {
+  const data = loadData();
+  const direct = data.nodeRubrics.get(nodeId);
+  if (direct && direct.length > 0) return direct;
+  const rawRub = data.rubrics[nodeId];
+  if (rawRub && rawRub.length > 0) return rawRub;
+  const parts = nodeId.split("-");
+  while (parts.length > 2) {
+    parts.pop();
+    const parentId = parts.join("-");
+    const parent = data.nodeRubrics.get(parentId);
+    if (parent && parent.length > 0) return parent;
+    const rawParent = data.rubrics[parentId];
+    if (rawParent && rawParent.length > 0) return rawParent;
+  }
+  return [];
+}
 export function getNeoRemedyById() { return loadData().remedyById; }
 export function getNeoSymptomById() { return loadData().symptomById; }
 export function getNeoChapterById() { return loadData().chapterById; }
@@ -308,3 +352,4 @@ export function getNeoRemedySearchIndex() {
   return buildRemedySearchIndex(data.remedies);
 }
 export function getNeoBnToEn() { return repBnToEn; }
+

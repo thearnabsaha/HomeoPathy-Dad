@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNeoRubrics, getNeoRemedyById, getNeoSymptomById } from "@/data/neoLoader";
-
-function findMatchingRubrics(symptomId: string, rubrics: Record<string, { remedyId: string; grade: number; rawRank: number }[]>) {
-  const direct = rubrics[symptomId];
-  if (direct && direct.length > 0) return [{ symptomId, remedies: direct }];
-
-  const parts = symptomId.split("-");
-  while (parts.length > 2) {
-    parts.pop();
-    const parentId = parts.join("-");
-    const parent = rubrics[parentId];
-    if (parent && parent.length > 0) return [{ symptomId: parentId, remedies: parent }];
-  }
-  return [];
-}
+import { getNeoRemedyById, getNeoSymptomById, getRubricsForNode } from "@/data/neoLoader";
+import { SymptomBreakdownItem, SymptomRemedyMatch } from "@/lib/types";
 
 export function POST(request: NextRequest) {
   return request.json().then((body) => {
@@ -23,47 +10,102 @@ export function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please provide an array of symptom IDs" }, { status: 400 });
     }
 
-    const rubrics = getNeoRubrics();
     const remedyById = getNeoRemedyById();
     const symptomById = getNeoSymptomById();
 
     const topN = Math.min(Math.max(rawTopN || 30, 1), 100);
-    const scores = new Map<string, { totalScore: number; symptomsCovered: number; maxGrade: number; details: { symptomId: string; symptomName: string; parentSymptomName?: string; conditionName?: string; grade: number }[] }>();
+    const scores = new Map<
+      string,
+      {
+        totalScore: number;
+        symptomsCovered: number;
+        maxGrade: number;
+        details: {
+          symptomId: string;
+          symptomName: string;
+          parentSymptomName?: string;
+          conditionName?: string;
+          grade: number;
+        }[];
+      }
+    >();
+
+    const symptomBreakdown: SymptomBreakdownItem[] = [];
 
     for (const symId of symptomIds) {
-      for (const rubric of findMatchingRubrics(symId, rubrics)) {
-        for (const rem of rubric.remedies) {
-          let entry = scores.get(rem.remedyId);
-          if (!entry) {
-            entry = { totalScore: 0, symptomsCovered: 0, maxGrade: 0, details: [] };
-            scores.set(rem.remedyId, entry);
-          }
-          // totalScore sums the RAW rank (the actual database value like 5, 8, 10) — matches reference site's {{obj.Rank}}.
-          // maxGrade tracks the 1–3 clamped grade, used for the High/Medium/Low badge color.
-          entry.totalScore += rem.rawRank;
-          entry.symptomsCovered++;
-          if (rem.grade > entry.maxGrade) entry.maxGrade = rem.grade;
-          const sym = symptomById.get(rubric.symptomId);
-          // When the matched node is a sub-symptom, sym.symptomName holds its parent symptom's display name.
-          const parentName =
-            sym?.type === "subSymptom" && sym.symptomName && sym.symptomName !== sym.name
-              ? sym.symptomName
-              : undefined;
-          // details[].grade carries the per-symptom rawRank for display in the "Medicine Rank List All" table.
-          entry.details.push({
-            symptomId: rubric.symptomId,
-            symptomName: sym?.name || rubric.symptomId,
-            parentSymptomName: parentName,
-            conditionName: sym?.conditionName,
-            grade: rem.rawRank,
-          });
+      const sym = symptomById.get(symId);
+      const parentName =
+        sym?.type === "subSymptom" && sym.symptomName && sym.symptomName !== sym.name
+          ? sym.symptomName
+          : undefined;
+
+      const parts: string[] = [];
+      if (sym?.conditionName) parts.push(sym.conditionName);
+      if (parentName) parts.push(parentName);
+      if (sym?.name) parts.push(sym.name);
+      const symptomLabel = parts.length > 0 ? parts.join(" > ") : (sym?.name || symId);
+
+      const rubricEntries = getRubricsForNode(symId);
+      const remMap = new Map<string, { grade: number; rawRank: number }>();
+      for (const rem of rubricEntries) {
+        const ex = remMap.get(rem.remedyId);
+        if (!ex) {
+          remMap.set(rem.remedyId, { grade: rem.grade, rawRank: rem.rawRank });
+        } else {
+          if (rem.grade > ex.grade) ex.grade = rem.grade;
+          if (rem.rawRank > ex.rawRank) ex.rawRank = rem.rawRank;
         }
       }
+
+      // Update ranking scores
+      for (const [remId, remData] of remMap.entries()) {
+        let entry = scores.get(remId);
+        if (!entry) {
+          entry = { totalScore: 0, symptomsCovered: 0, maxGrade: 0, details: [] };
+          scores.set(remId, entry);
+        }
+        entry.totalScore += remData.rawRank;
+        entry.symptomsCovered++;
+        if (remData.grade > entry.maxGrade) entry.maxGrade = remData.grade;
+
+        entry.details.push({
+          symptomId: symId,
+          symptomName: sym?.name || symId,
+          parentSymptomName: parentName,
+          conditionName: sym?.conditionName,
+          grade: remData.rawRank,
+        });
+      }
+
+      // Build breakdown remedies list sorted by rank
+      const remediesList: SymptomRemedyMatch[] = [];
+      for (const [remId, remData] of remMap.entries()) {
+        const remedyObj = remedyById.get(remId);
+        remediesList.push({
+          remedyId: remId,
+          remedyName: remedyObj?.name || remId,
+          grade: remData.grade,
+          rawRank: remData.rawRank,
+        });
+      }
+
+      remediesList.sort((a, b) => {
+        if (b.rawRank !== a.rawRank) return b.rawRank - a.rawRank;
+        return a.remedyName.localeCompare(b.remedyName);
+      });
+
+      symptomBreakdown.push({
+        symptomId: symId,
+        symptomName: sym?.name || symId,
+        parentSymptomName: parentName,
+        conditionName: sym?.conditionName,
+        repertoryName: sym?.repertoryName,
+        symptomLabel,
+        remedies: remediesList,
+      });
     }
 
     const totalSymptoms = symptomIds.length;
-    // Use the largest observed rawRank per matched remedy-symptom to define the ceiling for scoreRatio,
-    // so the confidence calculation stays sane regardless of how big raw ranks are in the database.
     let maxObservedRawRank = 1;
     for (const entry of scores.values()) {
       for (const d of entry.details) if (d.grade > maxObservedRawRank) maxObservedRawRank = d.grade;
@@ -108,6 +150,8 @@ export function POST(request: NextRequest) {
       totalSymptomsAnalyzed: symptomIds.length,
       totalRemediesFound: result.length,
       rankedRemedies: result,
+      symptomBreakdown,
     });
   });
 }
+
