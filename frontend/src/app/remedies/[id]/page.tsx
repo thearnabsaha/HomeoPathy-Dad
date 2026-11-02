@@ -60,8 +60,20 @@ function RemedyContent({ params }: { params: Promise<{ id: string }> }) {
   const nameUpper = remedy.name.toUpperCase();
   const descText = isBn ? (medDescBn[nameUpper] || medDescBn[remedy.name] || bn(remedy.description)) : remedy.description;
   const dosageText = isBn ? (medDosageBn[nameUpper] || medDosageBn[remedy.name] || bn(remedy.dosage)) : remedy.dosage;
-  const worseItems = isBn ? (medWorseBn[nameUpper] || medWorseBn[remedy.name] || remedy.modalities?.worse?.map(bn)) : remedy.modalities?.worse;
-  const betterItems = isBn ? (medBetterBn[nameUpper] || medBetterBn[remedy.name] || remedy.modalities?.better?.map(bn)) : remedy.modalities?.better;
+  const worseItems = isBn
+    ? (Array.isArray(medWorseBn[nameUpper]) && medWorseBn[nameUpper].length > 0
+        ? medWorseBn[nameUpper]
+        : Array.isArray(medWorseBn[remedy.name]) && medWorseBn[remedy.name].length > 0
+        ? medWorseBn[remedy.name]
+        : remedy.modalities?.worse?.map(bn))
+    : remedy.modalities?.worse;
+  const betterItems = isBn
+    ? (Array.isArray(medBetterBn[nameUpper]) && medBetterBn[nameUpper].length > 0
+        ? medBetterBn[nameUpper]
+        : Array.isArray(medBetterBn[remedy.name]) && medBetterBn[remedy.name].length > 0
+        ? medBetterBn[remedy.name]
+        : remedy.modalities?.better?.map(bn))
+    : remedy.modalities?.better;
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -5997,7 +5997,7 @@ for (const [en, bn] of Object.entries(wordBn)) {
   repBnToEn[bn] = en;
 }
 
-export function toBengaliNumeral(n: number): string {
+export function toBengaliNumeral(n: number | string): string {
   const digits = "০১২৩৪৫৬৭৮৯";
   return String(n).replace(/\d/g, (d) => digits[parseInt(d)]);
 }

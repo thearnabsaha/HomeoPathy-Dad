@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "@/i18n/useTranslation";
 import { neoApi } from "@/lib/neoApi";
 import { cn } from "@/lib/utils";
-import { translateRepertory, medDescBn } from "@/i18n/repertoryBn";
+import { translateRepertory, toBengaliNumeral, medDescBn } from "@/i18n/repertoryBn";
 import { useNeoBookmarks } from "@/hooks/useNeoBookmarks";
 import type { SymptomDetail } from "@/lib/types";
 
@@ -112,9 +112,12 @@ export function NeoSymptomTree({
     [childrenCache]
   );
 
+  const isBn = language === "bn";
+  const num = useCallback((n: number | string) => (isBn ? toBengaliNumeral(n) : String(n)), [isBn]);
+
   const tr = useCallback(
-    (text: string) => (language === "bn" ? translateRepertory(text) : text),
-    [language]
+    (text: string) => (isBn ? translateRepertory(text) : text),
+    [isBn]
   );
 
   const sortedSubSymptoms = useMemo(() => {
@@ -199,7 +202,7 @@ export function NeoSymptomTree({
             <div className="mb-6 animate-fade-in">
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
                 {t("symptom.subSymptoms")}
-                <span className="ml-1 text-muted-foreground/60">({sortedSubSymptoms.length})</span>
+                <span className="ml-1 text-muted-foreground/60">({num(sortedSubSymptoms.length)})</span>
               </h3>
               <div className="space-y-1">
                 {sortedSubSymptoms.map((sub) => {
@@ -311,7 +314,7 @@ export function NeoSymptomTree({
             <div>
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
                 {t("symptom.remediesFor")} {tr(symptom.name)}
-                <span className="ml-1 text-muted-foreground/60">({sortedRemedies.length})</span>
+                <span className="ml-1 text-muted-foreground/60">({num(sortedRemedies.length)})</span>
               </h3>
               <div className="space-y-2">
                 {sortedRemedies.map((rem, idx) => {
@@ -335,7 +338,7 @@ export function NeoSymptomTree({
                             : "bg-muted text-muted-foreground border-border"
                         )}
                       >
-                        {idx + 1}
+                        {num(idx + 1)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
@@ -343,7 +346,7 @@ export function NeoSymptomTree({
                           <span className="text-xs text-muted-foreground">({rem.abbr})</span>
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-1">
-                          {language === "bn" ? (medDescBn[rem.name.toUpperCase()] || medDescBn[rem.name] || tr(rem.description)) : rem.description}
+                          {isBn ? (medDescBn[rem.name.toUpperCase()] || medDescBn[rem.name] || tr(rem.description)) : rem.description}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 ml-2 flex-shrink-0">
@@ -351,7 +354,7 @@ export function NeoSymptomTree({
                           "text-sm font-bold tabular-nums min-w-[1.5rem] text-center",
                           rem.strength >= 3 ? "text-green-500" : rem.strength >= 2 ? "text-yellow-500" : "text-red-400"
                         )}>
-                          {rankNum}
+                          {num(rankNum)}
                         </span>
                         <Badge
                           variant={rem.strength >= 3 ? "default" : "secondary"}

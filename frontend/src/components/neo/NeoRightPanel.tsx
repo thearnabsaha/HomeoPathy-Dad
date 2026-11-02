@@ -201,7 +201,7 @@ function RankedRemedyCard({
               <div>
                 <span className="font-medium text-red-400/80">{t("rank.worse")}:</span>
                 <p className="text-muted-foreground mt-0.5">
-                  {isBn && worBn
+                  {isBn && Array.isArray(worBn) && worBn.length > 0
                     ? worBn.slice(0, 4).join(", ")
                     : Array.isArray(remedy.modalities.worse)
                     ? remedy.modalities.worse.slice(0, 4).map((w) => tr(w)).join(", ")
@@ -213,7 +213,7 @@ function RankedRemedyCard({
               <div>
                 <span className="font-medium text-green-400/80">{t("rank.better")}:</span>
                 <p className="text-muted-foreground mt-0.5">
-                  {isBn && betBn
+                  {isBn && Array.isArray(betBn) && betBn.length > 0
                     ? betBn.slice(0, 4).join(", ")
                     : Array.isArray(remedy.modalities.better)
                     ? remedy.modalities.better.slice(0, 4).map((b) => tr(b)).join(", ")
