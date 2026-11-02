@@ -4,9 +4,9 @@ import { neoRemediesData, getNeoRubrics, getNeoRemedyById, getNeoSymptomSearchIn
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const MODEL_CASCADE = [
-  "openai/gpt-oss-120b",
+  "qwen/qwen3.8-27b",
   "openai/gpt-oss-20b",
-  "llama-3.3-70b-versatile",
+  "openai/gpt-oss-120b",
   "openai/gpt-oss-safeguard-20b",
 ];
 
@@ -236,8 +236,8 @@ function generateFallbackRecommendation(answers: Record<string, string>, complai
   return {
     type: "recommendation" as const,
     message: isBn
-      ? "আপনার সকল উত্তর বিশ্লেষণ করে NeoAI ক্লাসিক্যাল রেপার্টরি থেকে নিম্নলিখিত ওষুধ পরামর্শ দিচ্ছে।"
-      : "After analyzing all your answers, NeoAI recommends the following medicines from the classical repertory.",
+      ? "আপনার সকল উত্তর বিশ্লেষণ করে হোমিওপ্যাথিক রেপার্টরাইজেশন থেকে নিম্নলিখিত ওষুধ পরামর্শ দিচ্ছে।"
+      : "After analyzing all your answers, homeopathic repertorization recommends the following medicines.",
     symptomsIdentified: keywords,
     primaryRemedy: primary ? { ...primary, keyIndications: primary.keyIndications || [] } : { name: "Nux Vomica", abbr: "Nux-v.", confidence: 75, explanation: "", dosage: "30C", keyIndications: [] },
     alternativeRemedies: alts.map((a) => ({ name: a.name, abbr: a.abbr, confidence: a.confidence, brief: a.brief })),

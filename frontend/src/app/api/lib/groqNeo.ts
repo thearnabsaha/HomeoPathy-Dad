@@ -3,8 +3,9 @@ import { neoRemediesData, getNeoRubrics, getNeoRemedyById, getNeoSymptomSearchIn
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const MODEL_CASCADE = [
+  "qwen/qwen3.8-27b",
+  "openai/gpt-oss-20b",
   "openai/gpt-oss-120b",
-  "llama-3.3-70b-versatile",
 ];
 
 function getTopRemediesForText(text: string, limit: number): string {
@@ -255,8 +256,8 @@ function generateNeoFallback(input: string) {
   const remedyById = getNeoRemedyById();
 
   return {
-    analysis: "NeoAI ক্লাসিক্যাল রেপার্টরি ডাটাবেস থেকে আপনার লক্ষণ বিশ্লেষণ করে নিম্নলিখিত ওষুধগুলি পরামর্শ দিচ্ছে।",
-    message: "আপনার লক্ষণগুলি বিশ্লেষণ করে NeoAI ক্লাসিক্যাল রেপার্টরি থেকে মিলে যাওয়া ওষুধ খুঁজে পেয়েছি।",
+    analysis: "নির্বাচিত লক্ষণগুলির উপর ভিত্তি করে, হোমিওপ্যাথিক রেপার্টরাইজেশন বিশ্লেষণ নিম্নলিখিত ওষুধগুলি পরামর্শ দিচ্ছে।",
+    message: "আপনার লক্ষণগুলি বিশ্লেষণ করে শাস্ত্রীয় রেপার্টরি থেকে মিলে যাওয়া ওষুধ খুঁজে পেয়েছি।",
     remedies: sorted.map(([remedyId, score]) => {
       const remedy = remedyById.get(remedyId);
       if (!remedy) return null;
