@@ -96,7 +96,7 @@ export function NeoChatWidget() {
       {/* Toggle button - fixed bottom-right, purple/violet via bg-primary */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+        className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] right-6 z-50 h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
       >
         {isOpen ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
       </button>

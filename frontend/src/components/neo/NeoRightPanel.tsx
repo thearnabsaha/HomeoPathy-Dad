@@ -736,7 +736,7 @@ export function NeoRightPanel({
               className="fixed inset-0 z-40 bg-background/80"
               onClick={() => setMobileOpen(false)}
             />
-            <div className="fixed bottom-0 left-0 right-0 z-40 max-h-[75vh] rounded-t-2xl border-t border-border bg-background shadow-xl overflow-y-auto animate-slide-up">
+            <div className="fixed bottom-0 left-0 right-0 z-40 max-h-[75vh] max-h-[75dvh] pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] rounded-t-2xl border-t border-border bg-background shadow-xl overflow-y-auto animate-slide-up">
               <div className="flex justify-center pt-2 pb-1">
                 <div className="h-1 w-10 rounded-full bg-border" />
               </div>

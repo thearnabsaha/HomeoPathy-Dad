@@ -215,12 +215,12 @@ export function NeoSidebar({
 
       <aside
         className={cn(
-          "fixed top-14 left-0 z-30 h-[calc(100vh-3.5rem)] w-[85vw] max-w-sm border-r border-border bg-background transition-transform duration-200 lg:static lg:w-80 lg:max-w-none lg:translate-x-0",
+          "fixed top-14 left-0 z-30 h-[calc(100vh-3.5rem)] h-[calc(100dvh-3.5rem)] w-[85vw] max-w-sm border-r border-border bg-background transition-transform duration-200 lg:static lg:w-80 lg:max-w-none lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <ScrollArea className="h-full">
-          <div className="p-3">
+          <div className="p-3 pb-12 lg:pb-3">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               <Layers className="h-3 w-3" />
               {t("repertory.repertories")} ({num(repertories.length)})
