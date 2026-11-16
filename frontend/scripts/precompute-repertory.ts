@@ -161,6 +161,7 @@ function main() {
     id: r.id,
     name: r.name,
     abbr: r.abbr,
+    description: r.description,
     symptomCount: r.commonSymptoms.length,
   }));
 
