@@ -1,84 +1,37 @@
-# RepertoryAI
+# NeoAI Homeopathy (HomeoPathy-Dad)
 
-AI-Powered Homeopathic Repertory based on Kent's Repertory. Intelligent symptom analysis and remedy suggestions.
+Homeopathic repertory app for symptom exploration, remedy ranking, and AI consults. Built for a Vercel Hobby + Neon free-tier deployment.
 
 ## Stack
 
-- **Frontend**: Next.js 15 (App Router), TypeScript, TailwindCSS, ShadCN UI
-- **Backend**: Express.js, Node.js, REST API
-- **AI**: Grok API (xAI) for symptom analysis and remedy suggestions
-- **Speech**: Web Speech API (speech-to-text & text-to-speech)
+- **App**: Next.js 15 (App Router) + TypeScript + Tailwind CSS + shadcn/ui, in `frontend/`
+- **Data**: Prisma + Neon Postgres (auth, consultations, repertory sessions)
+- **AI**: Groq (chat, symptom analysis, doctor/consult flows)
+- **Repertory**: Kent-style data in `frontend/src/data/`; compact artifacts are generated at build time from `oldRepertory.json` and `medicineDetails.json`
 - **Languages**: English and Bengali
 
-## Quick Start
+The `backend/` folder is the old Express API and is not used by the deployed app.
 
-### Backend
+## Commands
 
-```bash
-cd backend
-npm install
-# Edit .env and add your Grok API key
-node server.js
-```
-
-The backend runs on `http://localhost:5000`.
-
-### Frontend
+All app commands run from `frontend/`. Copy `frontend/.env.example` to `frontend/.env` and fill in `DATABASE_URL`, `JWT_SECRET`, and `GROQ_API_KEY`. Never commit `.env`.
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run precompute          # writes src/data/generated/* from the repertory JSON
+npm run dev                 # http://localhost:3000
+npx prisma generate && npx next build
+npm start
 ```
 
-The frontend runs on `http://localhost:3000`.
+`npm run build` is `prisma generate && npm run precompute && next build`. It must **not** run `prisma db push` (that would rewrite the live Neon schema on every deploy).
 
-### Data Scraper (Optional)
+## Design rules
 
-To fetch the full Kent Repertory dataset:
-
-```bash
-cd backend
-node scripts/scraper.js
-```
-
-## Features
-
-- Hierarchical symptom explorer (22 chapters from Kent's Repertory)
-- Remedy listing with strength ratings
-- AI-powered multi-symptom analysis via Grok API
-- Floating AI chat assistant
-- Voice input (speech-to-text)
-- Audio reading (text-to-speech)
-- Global search with autocomplete
-- English/Bengali language switching
-- Symptom bookmarking
-- Recent search history
-- Minimalist black & white medical interface
-- Fully responsive design
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/api/symptoms` | GET | List all chapters |
-| `/api/symptoms/:id` | GET | Symptom detail + remedies |
-| `/api/symptoms/search?q=` | GET | Search symptoms |
-| `/api/remedies` | GET | List all remedies |
-| `/api/remedies/:id` | GET | Remedy detail |
-| `/api/remedies/search?q=` | GET | Search remedies |
-| `/api/analyze-symptoms` | POST | AI symptom analysis |
-| `/api/chat` | POST | AI chat |
-
-## Environment Variables
-
-Create `backend/.env`:
-
-```
-GROK_API_KEY=your_grok_api_key_here
-PORT=5000
-FRONTEND_URL=http://localhost:3000
-```
-
-Get a Grok API key from [console.x.ai](https://console.x.ai/).
-The app works without an API key using a built-in fallback repertorization engine.
+- Keep work on free tiers (Vercel Hobby, Neon free). Do not add a 24/7 database keep-alive; it would exceed Neon’s 100 CU-hour monthly quota.
+- Static repertory GET routes should send `Cache-Control`, `CDN-Cache-Control`, and `Vercel-CDN-Cache-Control` with `public, s-maxage=3600, stale-while-revalidate=86400` (shorter TTL for search).
+- Runtime routes must not import or parse the 33 MB `oldRepertory.json`. Use the precomputed files under `src/data/generated/`.
+- Do not write to the database from build or from one-off scripts unless explicitly asked.
+- Open only the files you need, edit in place, and prefer one typecheck plus one production build at the end of a change set.
+- Auth tokens live in localStorage, not cookies, so public repertory GETs can be cached at the edge.
