@@ -8,6 +8,7 @@ import type {
   SearchResult,
   RankingResult,
 } from "./types";
+import { peekLocalSwr, swrKeyForEndpoint, writeLocalSwr } from "./localSwrCache";
 
 export interface NeoSubSymptomSummary {
   id: string;
@@ -68,6 +69,8 @@ async function fetchNeoAPI<T>(endpoint: string, options?: RequestInit): Promise<
       const oldest = getCache.keys().next().value;
       if (oldest) getCache.delete(oldest);
     }
+    const swrKey = swrKeyForEndpoint(endpoint);
+    if (swrKey) writeLocalSwr(swrKey, data);
   }
 
   return data as T;
@@ -78,7 +81,7 @@ export const neoApi = {
 
   getChildren: (parentId: string) =>
     fetchNeoAPI<{ children: (NeoConditionSummary | NeoSymptomSummary | NeoSubSymptomSummary)[]; type: string }>(
-      `/symptoms?parent=${encodeURIComponent(parentId)}`
+      `/symptoms/children/${encodeURIComponent(parentId)}`
     ),
 
   getSymptomById: (id: string) =>
@@ -157,3 +160,9 @@ export interface DoctorRecommendationResponse {
 }
 
 export type DoctorResponse = DoctorQuestionsResponse | DoctorRecommendationResponse;
+
+export function peekExplorerCache<T>(endpoint: string): T | null {
+  const key = swrKeyForEndpoint(endpoint);
+  if (!key) return null;
+  return peekLocalSwr<T>(key);
+}

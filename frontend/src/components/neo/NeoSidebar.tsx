@@ -5,7 +5,7 @@ import { ChevronRight, BookmarkIcon, History, Clock, Pill, Layers, FolderOpen, S
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNeoBookmarks } from "@/hooks/useNeoBookmarks";
-import { neoApi } from "@/lib/neoApi";
+import { neoApi, peekExplorerCache } from "@/lib/neoApi";
 import type { NeoRepertorySummary } from "@/lib/neoApi";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -113,19 +113,25 @@ export function NeoSidebar({
   const tr = useCallback((s: string) => (isBn ? translateRepertory(s) : s), [isBn]);
   const num = (n: number) => (isBn ? toBengaliNumeral(n) : String(n));
 
-  useEffect(() => {
-    neoApi.getSymptoms().then((data) => {
-      setRepertories(data.chapters);
-      const initialCache: Record<string, ChildItem[]> = {};
-      for (const ch of data.chapters) {
-        if (Array.isArray(ch.conditions)) {
-          initialCache[ch.id] = ch.conditions as unknown as ChildItem[];
-        }
+  const applyChapterPayload = useCallback((data: { chapters: NeoRepertorySummary[] }) => {
+    setRepertories(data.chapters);
+    const initialCache: Record<string, ChildItem[]> = {};
+    for (const ch of data.chapters) {
+      if (Array.isArray(ch.conditions)) {
+        initialCache[ch.id] = ch.conditions as unknown as ChildItem[];
       }
-      setChildrenCache((prev) => ({ ...initialCache, ...prev }));
-      setLoading(false);
-    }).catch(() => setLoading(false));
+    }
+    setChildrenCache((prev) => ({ ...initialCache, ...prev }));
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const cached = peekExplorerCache<{ chapters: NeoRepertorySummary[] }>("/symptoms");
+    if (cached?.chapters?.length) {
+      applyChapterPayload(cached);
+    }
+    neoApi.getSymptoms().then(applyChapterPayload).catch(() => setLoading(false));
+  }, [applyChapterPayload]);
 
   const sortedReps = useMemo(() => {
     const locale = isBn ? "bn" : "en";
@@ -161,7 +167,12 @@ export function NeoSidebar({
 
   const fetchChildren = useCallback(async (parentId: string) => {
     if (childrenCache[parentId]) return;
-    setLoadingId(parentId);
+    const cached = peekExplorerCache<{ children: ChildItem[] }>(`/symptoms/children/${encodeURIComponent(parentId)}`);
+    if (cached?.children) {
+      setChildrenCache((prev) => ({ ...prev, [parentId]: cached.children }));
+    } else {
+      setLoadingId(parentId);
+    }
     try {
       const data = await neoApi.getChildren(parentId);
       setChildrenCache((prev) => ({ ...prev, [parentId]: data.children as ChildItem[] }));

@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "@/i18n/useTranslation";
-import { neoApi } from "@/lib/neoApi";
+import { neoApi, peekExplorerCache } from "@/lib/neoApi";
 import { cn } from "@/lib/utils";
 import { translateRepertory } from "@/i18n/repertoryBn";
 import { toBengaliNumeral } from "@/i18n/numeral";
@@ -150,8 +150,14 @@ export function NeoSymptomTree({
       setSymptomDetail(null);
       return;
     }
-    setLoading(true);
     setExpandedChildIds(new Set()); // collapse any previously expanded rows when a different node opens
+    const cached = peekExplorerCache<SymptomDetail>(`/symptoms/${selectedSymptomId}?v=2`);
+    if (cached?.symptom) {
+      setSymptomDetail(cached);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
     neoApi
       .getSymptomById(selectedSymptomId)
       .then((data) => {

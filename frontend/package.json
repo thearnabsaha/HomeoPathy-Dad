@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --skip-generate && next build",
+    "precompute": "tsx scripts/precompute-repertory.ts",
+    "build": "prisma generate && tsx scripts/precompute-repertory.ts && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -41,6 +42,7 @@
     "eslint-config-next": "^15.1.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0"
   }
 }

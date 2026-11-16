@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNeoSymptomSearchIndex, getNeoBnToEn } from "@/data/neoLoader";
+import symptomSearchIndex from "@/data/generated/symptom-search-index.json";
+import { repBnToEn } from "@/i18n/repertoryBn";
+import { searchDataHeaders } from "@/lib/cacheHeaders";
 
-const CACHE_HEADERS = {
-  "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
+type SearchEntry = {
+  id: string;
+  name: string;
+  nameLower: string;
+  bnLower: string;
+  type: string;
+  chapter: string;
+  parent?: string;
 };
+
+const searchIndex = symptomSearchIndex as SearchEntry[];
 
 function isBengali(text: string): boolean {
   return /[\u0980-\u09FF]/.test(text);
@@ -12,19 +22,18 @@ function isBengali(text: string): boolean {
 export function GET(request: NextRequest) {
   const raw = (request.nextUrl.searchParams.get("q") || "").trim();
   if (!raw || raw.length < 2) {
-    return NextResponse.json({ results: [] }, { headers: CACHE_HEADERS });
+    return NextResponse.json({ results: [] }, { headers: searchDataHeaders });
   }
 
   const query = raw.toLowerCase();
   const bengali = isBengali(raw);
-  const bnToEn = getNeoBnToEn();
+  const bnToEn = repBnToEn;
 
   let englishQuery = "";
   if (bengali && bnToEn[raw]) {
     englishQuery = bnToEn[raw].toLowerCase();
   }
 
-  const searchIndex = getNeoSymptomSearchIndex();
   const results = [];
 
   for (const entry of searchIndex) {
@@ -44,5 +53,5 @@ export function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ results }, { headers: CACHE_HEADERS });
+  return NextResponse.json({ results }, { headers: searchDataHeaders });
 }
