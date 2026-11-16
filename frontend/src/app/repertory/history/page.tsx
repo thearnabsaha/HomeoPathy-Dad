@@ -14,7 +14,6 @@ import { AuthGuard } from "@/components/AuthGuard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { useNeoAuth } from "@/hooks/useNeoAuth";
-import { useSlowLoading } from "@/hooks/useSlowLoading";
 import { cn } from "@/lib/utils";
 
 interface SavedSelection {
@@ -60,7 +59,6 @@ function HistoryContent() {
   const { token } = useNeoAuth();
   const [sessions, setSessions] = useState<RepertorySession[]>([]);
   const [loading, setLoading] = useState(false);
-  const wakingDb = useSlowLoading(loading);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
   const [query, setQuery] = useState("");
@@ -184,7 +182,7 @@ function HistoryContent() {
           {loading ? (
             <div className="flex flex-col items-center py-16">
               <Loader2 className="h-8 w-8 animate-spin text-primary mb-3" />
-              <p className="text-sm text-muted-foreground">{wakingDb ? (isBn ? "ডেটাবেস চালু হচ্ছে…" : "Waking up the database…") : (isBn ? "লোড হচ্ছে..." : "Loading...")}</p>
+              <p className="text-sm text-muted-foreground">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
             </div>
           ) : isEmpty ? (
             <div className="flex flex-col items-center text-center pt-16 animate-fade-in">

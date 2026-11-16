@@ -19,7 +19,6 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { useNeoDoctorHistory, DoctorHistoryEntry } from "@/hooks/useNeoDoctorHistory";
 import { useNeoAuth } from "@/hooks/useNeoAuth";
-import { useSlowLoading } from "@/hooks/useSlowLoading";
 import { cn } from "@/lib/utils";
 
 interface SavedQuestionEntry {
@@ -77,7 +76,6 @@ function HistoryContent() {
 
   const [dbEntries, setDbEntries] = useState<DbConsultation[]>([]);
   const [dbLoading, setDbLoading] = useState(false);
-  const wakingDb = useSlowLoading(dbLoading);
   const [tab, setTab] = useState<"cloud" | "local">(user ? "cloud" : "local");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
@@ -214,7 +212,7 @@ function HistoryContent() {
           {dbLoading && showingCloud ? (
             <div className="flex flex-col items-center py-16">
               <Loader2 className="h-8 w-8 animate-spin text-primary mb-3" />
-              <p className="text-sm text-muted-foreground">{wakingDb ? (isBn ? "ডেটাবেস চালু হচ্ছে…" : "Waking up the database…") : (isBn ? "লোড হচ্ছে..." : "Loading...")}</p>
+              <p className="text-sm text-muted-foreground">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
             </div>
           ) : isEmpty ? (
             <div className="flex flex-col items-center text-center pt-16 animate-fade-in">

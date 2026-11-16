@@ -169,7 +169,6 @@
   },
   "common": {
     "loading": "Loading...",
-    "wakingDatabase": "Waking up the database…",
     "error": "Something went wrong",
     "retry": "Retry",
     "close": "Close",

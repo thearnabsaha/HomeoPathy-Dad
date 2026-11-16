@@ -8,7 +8,6 @@ import { Sparkles, Eye, EyeOff, ArrowLeft, Loader2, LogIn, UserPlus } from "luci
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNeoAuth } from "@/hooks/useNeoAuth";
-import { useSlowLoading } from "@/hooks/useSlowLoading";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { cn } from "@/lib/utils";
@@ -24,7 +23,7 @@ export default function NeoLoginPage() {
 }
 
 function LoginContent() {
-  const { language, t } = useTranslation();
+  const { language } = useTranslation();
   const isBn = language === "bn";
   const { user, login, signup, loading: authLoading } = useNeoAuth();
   const router = useRouter();
@@ -38,7 +37,6 @@ function LoginContent() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const wakingDb = useSlowLoading(loading);
 
   useEffect(() => {
     if (!authLoading && user) router.replace(redirectTo);
@@ -204,7 +202,7 @@ function LoginContent() {
                 <UserPlus className="h-4 w-4" />
               )}
               {loading
-                ? (wakingDb ? t("common.wakingDatabase") : (isBn ? "অপেক্ষা করুন..." : "Please wait..."))
+                ? (isBn ? "অপেক্ষা করুন..." : "Please wait...")
                 : mode === "login"
                   ? (isBn ? "লগইন করুন" : "Login")
                   : (isBn ? "অ্যাকাউন্ট তৈরি করুন" : "Create Account")}
