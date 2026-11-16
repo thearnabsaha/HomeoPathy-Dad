@@ -1,111 +1,82 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  getNeoSymptomById,
-  getNeoRubrics,
-  getNeoRemedyById,
-  getNeoChapterById,
-  neoSymptomsData,
-} from "@/data/neoLoader";
+import { NextResponse } from "next/server";
+import childrenMap from "@/data/generated/children.json";
+import { getNeoRemedyById, getNeoSymptomById, getRubricsForNode } from "@/data/neoLoader";
+import { staticDataHeaders } from "@/lib/cacheHeaders";
 
-const CACHE_HEADERS = {
-  "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
-};
+export const revalidate = 3600;
 
-const responseCache = new Map<string, unknown>();
+const children = childrenMap as Record<string, { children: { id: string; name: string; hasSubSymptoms?: boolean; subSymptomCount?: number; symptomCount?: number }[]; type: string }>;
 
-function collectChildRubrics(
-  symptoms: { id: string; subSymptoms: { id: string }[] }[],
-  rubrics: Record<string, { remedyId: string; grade: number; rawRank: number }[]>,
-  out: { remedyId: string; grade: number; rawRank: number }[]
-) {
-  for (const sym of symptoms) {
-    const r = rubrics[sym.id];
-    if (r) out.push(...r);
-    for (const sub of sym.subSymptoms) {
-      const sr = rubrics[sub.id];
-      if (sr) out.push(...sr);
-    }
+function breadcrumbFor(id: string): { id: string; name: string }[] {
+  const symptomById = getNeoSymptomById();
+  const found = symptomById.get(id);
+  if (!found) return [];
+  const crumb: { id: string; name: string }[] = [];
+  const pushId = (nid?: string) => {
+    if (!nid) return;
+    const meta = symptomById.get(nid);
+    if (meta) crumb.push({ id: meta.id, name: meta.name });
+  };
+  if (found.type === "repertory") {
+    pushId(found.id);
+  } else if (found.type === "condition") {
+    pushId(found.chapterId);
+    pushId(found.id);
+  } else if (found.type === "symptom") {
+    pushId(found.chapterId);
+    pushId(found.conditionId);
+    pushId(found.id);
+  } else if (found.type === "subSymptom") {
+    pushId(found.chapterId);
+    pushId(found.conditionId);
+    pushId(found.parentSymptomId);
+    pushId(found.id);
   }
+  return crumb;
+}
+
+function childSymptoms(id: string, type: string): { id: string; name: string; hasSubSymptoms: boolean }[] {
+  const hit = children[id];
+  if (!hit) return [];
+  if (type === "repertory") {
+    return hit.children.map((c) => ({
+      id: c.id,
+      name: c.name,
+      hasSubSymptoms: (c.symptomCount || 0) > 0,
+    }));
+  }
+  if (type === "condition") {
+    return hit.children.map((s) => ({
+      id: s.id,
+      name: s.name,
+      hasSubSymptoms: Boolean(s.hasSubSymptoms) || (s.subSymptomCount || 0) > 0,
+    }));
+  }
+  if (type === "symptom") {
+    return hit.children.map((s) => ({
+      id: s.id,
+      name: s.name,
+      hasSubSymptoms: false,
+    }));
+  }
+  return [];
 }
 
 export function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return params.then(({ id }) => {
-    const cached = responseCache.get(id);
-    if (cached) {
-      return NextResponse.json(cached, { headers: CACHE_HEADERS });
-    }
-
     const symptomById = getNeoSymptomById();
-    const rubrics = getNeoRubrics();
     const remedyById = getNeoRemedyById();
-    const chapterById = getNeoChapterById();
-    const chapters = neoSymptomsData.chapters;
-
     const found = symptomById.get(id);
     if (!found) {
       return NextResponse.json({ error: "Symptom not found" }, { status: 404 });
     }
 
-    // Each child entry carries hasSubSymptoms so the UI can show an expand affordance only when there is a deeper level.
-    let subSymptoms: { id: string; name: string; hasSubSymptoms: boolean }[] = [];
-    const allRubricEntries: { remedyId: string; grade: number; rawRank: number }[] = [];
+    const subSymptoms = childSymptoms(id, found.type);
+    const allRubricEntries = getRubricsForNode(id);
 
-    if (found.type === "repertory") {
-      const ch = chapterById.get(id);
-      if (ch) {
-        // Conditions effectively always have child symptoms in the dataset, but compute it honestly.
-        subSymptoms = ch.conditions.map((c) => ({
-          id: c.id,
-          name: c.name,
-          hasSubSymptoms: c.symptoms.length > 0,
-        }));
-        for (const cond of ch.conditions) collectChildRubrics(cond.symptoms, rubrics, allRubricEntries);
-      }
-    } else if (found.type === "condition") {
-      outer_cond: for (const ch of chapters) {
-        for (const cond of ch.conditions) {
-          if (cond.id === id) {
-            subSymptoms = cond.symptoms.map((s) => ({
-              id: s.id,
-              name: s.name,
-              hasSubSymptoms: s.subSymptoms.length > 0,
-            }));
-            collectChildRubrics(cond.symptoms, rubrics, allRubricEntries);
-            break outer_cond;
-          }
-        }
-      }
-    } else if (found.type === "symptom") {
-      outer_sym: for (const ch of chapters) {
-        for (const cond of ch.conditions) {
-          for (const sym of cond.symptoms) {
-            if (sym.id === id) {
-              // sym.subSymptoms are leaf nodes in the data model; they never have deeper children.
-              subSymptoms = sym.subSymptoms.map((s) => ({
-                id: s.id,
-                name: s.name,
-                hasSubSymptoms: false,
-              }));
-              const r = rubrics[sym.id];
-              if (r) allRubricEntries.push(...r);
-              for (const sub of sym.subSymptoms) {
-                const sr = rubrics[sub.id];
-                if (sr) allRubricEntries.push(...sr);
-              }
-              break outer_sym;
-            }
-          }
-        }
-      }
-    } else if (found.type === "subSymptom") {
-      const r = rubrics[id];
-      if (r) allRubricEntries.push(...r);
-    }
-
-    // Aggregate: highest grade + highest rawRank per remedy
     const remedyAgg = new Map<string, { grade: number; rawRank: number }>();
     for (const entry of allRubricEntries) {
       const existing = remedyAgg.get(entry.remedyId);
@@ -141,50 +112,12 @@ export function GET(
       })
       .slice(0, 200);
 
-    const symptomData = { id: found.id, name: found.name, type: found.type, subSymptoms };
+    const body = {
+      symptom: { id: found.id, name: found.name, type: found.type, subSymptoms },
+      breadcrumb: breadcrumbFor(id),
+      remedies: symptomRemedies,
+    };
 
-    // Breadcrumb with navigable IDs
-    const breadcrumb: { id: string; name: string }[] = [];
-    if (found.type === "repertory") {
-      breadcrumb.push({ id: found.id, name: found.name });
-    } else if (found.type === "condition") {
-      for (const ch of chapters) {
-        if (ch.name === found.repertoryName) { breadcrumb.push({ id: ch.id, name: ch.name }); break; }
-      }
-      breadcrumb.push({ id: found.id, name: found.name });
-    } else if (found.type === "symptom") {
-      for (const ch of chapters) {
-        if (ch.name === found.repertoryName) {
-          breadcrumb.push({ id: ch.id, name: ch.name });
-          for (const cond of ch.conditions) {
-            if (cond.name === found.conditionName) { breadcrumb.push({ id: cond.id, name: cond.name }); break; }
-          }
-          break;
-        }
-      }
-      breadcrumb.push({ id: found.id, name: found.name });
-    } else if (found.type === "subSymptom") {
-      for (const ch of chapters) {
-        if (ch.name === found.repertoryName) {
-          breadcrumb.push({ id: ch.id, name: ch.name });
-          for (const cond of ch.conditions) {
-            if (cond.name === found.conditionName) {
-              breadcrumb.push({ id: cond.id, name: cond.name });
-              for (const sym of cond.symptoms) {
-                if (sym.name === found.symptomName) { breadcrumb.push({ id: sym.id, name: sym.name }); break; }
-              }
-              break;
-            }
-          }
-          break;
-        }
-      }
-      breadcrumb.push({ id: found.id, name: found.name });
-    }
-
-    const body = { symptom: symptomData, breadcrumb, remedies: symptomRemedies };
-    responseCache.set(id, body);
-
-    return NextResponse.json(body, { headers: CACHE_HEADERS });
+    return NextResponse.json(body, { headers: staticDataHeaders });
   });
 }

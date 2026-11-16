@@ -1,21 +1,10 @@
 import { NextResponse } from "next/server";
-import { neoRemediesData } from "@/data/neoLoader";
+import remedyList from "@/data/generated/remedy-list.json";
+import { staticDataHeaders } from "@/lib/cacheHeaders";
 
-const CACHE_HEADERS = {
-  "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-};
-
-let cached: { id: string; name: string; abbr: string; description: string; symptomCount: number }[] | null = null;
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export function GET() {
-  if (!cached) {
-    cached = neoRemediesData.remedies.map((r) => ({
-      id: r.id,
-      name: r.name,
-      abbr: r.abbr,
-      description: r.description,
-      symptomCount: r.commonSymptoms.length,
-    }));
-  }
-  return NextResponse.json({ remedies: cached }, { headers: CACHE_HEADERS });
+  return NextResponse.json(remedyList, { headers: staticDataHeaders });
 }

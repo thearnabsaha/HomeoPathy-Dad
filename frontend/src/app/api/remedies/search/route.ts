@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNeoRemedySearchIndex, getNeoBnToEn } from "@/data/neoLoader";
+import remedySearchIndex from "@/data/generated/remedy-search-index.json";
+import { repBnToEn } from "@/i18n/repertoryBn";
+import { searchDataHeaders } from "@/lib/cacheHeaders";
 
-const CACHE_HEADERS = {
-  "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
+type SearchEntry = {
+  id: string;
+  name: string;
+  abbr: string;
+  lower: string;
+  abbrLower: string;
+  descLower: string;
+  bnLower: string;
 };
+
+const searchIndex = remedySearchIndex as SearchEntry[];
 
 function isBengali(text: string): boolean {
   return /[\u0980-\u09FF]/.test(text);
@@ -12,19 +22,18 @@ function isBengali(text: string): boolean {
 export function GET(request: NextRequest) {
   const raw = (request.nextUrl.searchParams.get("q") || "").trim();
   if (!raw || raw.length < 2) {
-    return NextResponse.json({ results: [] }, { headers: CACHE_HEADERS });
+    return NextResponse.json({ results: [] }, { headers: searchDataHeaders });
   }
 
   const query = raw.toLowerCase();
   const bengali = isBengali(raw);
-  const bnToEn = getNeoBnToEn();
+  const bnToEn = repBnToEn;
 
   let englishQuery = "";
   if (bengali && bnToEn[raw]) {
     englishQuery = bnToEn[raw].toLowerCase();
   }
 
-  const searchIndex = getNeoRemedySearchIndex();
   const results = [];
 
   for (const entry of searchIndex) {
@@ -34,14 +43,14 @@ export function GET(request: NextRequest) {
 
     if (match) {
       results.push({
-        id: entry.r.id,
-        name: entry.r.name,
-        abbr: entry.r.abbr,
+        id: entry.id,
+        name: entry.name,
+        abbr: entry.abbr,
         type: "remedy",
       });
       if (results.length >= 50) break;
     }
   }
 
-  return NextResponse.json({ results }, { headers: CACHE_HEADERS });
+  return NextResponse.json({ results }, { headers: searchDataHeaders });
 }

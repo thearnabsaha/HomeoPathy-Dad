@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { neoRemediesData, getNeoRubrics, getNeoRemedyById, getNeoSymptomSearchIndex } from "@/data/neoLoader";
+import { getNeoRemedyById } from "@/data/neoRemedies";
+import { neoRemediesData, getNeoRubrics, getNeoSymptomSearchIndex } from "@/data/neoAiData";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
